@@ -5,7 +5,7 @@ import Search from "./Search";
 export default function Secret() {
     return (
         <div>
-            <Search onChange={() => {console.log()}} />
+            <Search onChange={() => {console.log()}} searchText={"Search Secrets"} />
         </div>
     )
 }

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {AutoComplete, Button, Menu} from 'antd';
+import {Button, Menu} from 'antd';
 import {useHistory} from "react-router";
 
 
@@ -23,7 +23,8 @@ export default function NavBar(props) {
 
     return (
         <div>
-            <Menu onClick={handleClick} selectedKeys={[current]} mode="horizontal">
+            <Menu style={{marginTop : "10px", marginLeft : "30px", marginRight: "30px"}} onClick={handleClick} selectedKeys={[current]} mode="horizontal">
+
                 <Menu.Item key="workspace">
                     Workspace
                 </Menu.Item>
@@ -36,7 +37,8 @@ export default function NavBar(props) {
                 <Menu.Item key="secret">
                     Secrets
                 </Menu.Item>
-                <Button onClick={logout}>
+                <Button style={{float: "right", marginTop: "5px", marginRight: "30px"}} type={"danger"}
+                        onClick={logout}>
                     Logout
                 </Button>
             </Menu>

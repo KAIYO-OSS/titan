@@ -29,8 +29,8 @@ export default function Workspace() {
 
         <div><Search onChange={() => {
             console.log()
-        }}/>
-            <Button>
+        }} searchText={"Search Workspace"}/>
+            <Button style={{marginTop : "5px", marginBottom : "15px"}} type={"primary"}>
                 Create Workspace
             </Button>
             <List
@@ -39,7 +39,7 @@ export default function Workspace() {
                 renderItem={item => (
                     <List.Item>
                         <Card title={item.title}
-                              actions={[<a key="list-loadmore-edit">Delete</a>, <a key="list-loadmore-more">View</a>]}>
+                              actions={[<a key="list-loadmore-edit">Delete</a>, <a href={"/workspace/id"} key="list-loadmore-more">View</a>]}>
                             content
                         </Card>
                     </List.Item>
