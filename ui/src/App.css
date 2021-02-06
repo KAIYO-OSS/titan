@@ -36,3 +36,17 @@
     transform: rotate(360deg);
   }
 }
+
+
+/*.ant-menu-item-selected {*/
+/*  background: blue !important;*/
+/*}*/
+
+.sw-menu {
+  /*background: white !important;*/
+  padding: 0px 30px;
+}
+
+/*.sw-menu li:hover {*/
+/*  background: grey !important;*/
+/*}*/

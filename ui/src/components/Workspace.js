@@ -1,9 +1,11 @@
 import React from "react";
 import {Button, Card, List} from "antd";
 import Search from "./Search";
+import {useHistory} from "react-router";
 
 
 export default function Workspace() {
+    const history = useHistory();
     const data = [
         {
             title: 'Title 1',
@@ -25,12 +27,16 @@ export default function Workspace() {
 
 
     ];
+
+    const toCreateWorkspace = () => {
+        history.push("/workspace/create")
+    }
     return (
 
         <div><Search onChange={() => {
             console.log()
         }} searchText={"Search Workspace"}/>
-            <Button style={{marginTop : "5px", marginBottom : "15px"}} type={"primary"}>
+            <Button style={{marginTop : "5px", marginBottom : "15px"}} onClick={toCreateWorkspace} type={"primary"}>
                 Create Workspace
             </Button>
             <List

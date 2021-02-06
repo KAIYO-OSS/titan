@@ -23,7 +23,7 @@ export default function NavBar(props) {
 
     return (
         <div>
-            <Menu style={{marginTop : "10px", marginLeft : "30px", marginRight: "30px"}} onClick={handleClick} selectedKeys={[current]} mode="horizontal">
+            <Menu theme="dark" className="sw-menu" style={{}} onClick={handleClick} selectedKeys={[current]} mode="horizontal">
 
                 <Menu.Item key="workspace">
                     Workspace

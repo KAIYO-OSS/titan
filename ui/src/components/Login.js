@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import {Button, Checkbox, Form, Input} from "antd";
+import {Button, Checkbox, Col, Form, Input, Row} from "antd";
 import {useHistory} from "react-router";
 
 
@@ -7,7 +7,7 @@ export default function Login() {
 
     const history = useHistory();
     useEffect(() => {
-        if(localStorage.getItem("x-kaiyo-token") !== null) {
+        if (localStorage.getItem("x-kaiyo-token") !== null) {
             history.push("/")
         }
     }, [])
@@ -34,53 +34,59 @@ export default function Login() {
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
     };
-    return(
-        <div style={{maxWidth : '30%', marginTop: "20%"}}>
-            <Form
-                {...layout}
-                name="basic"
-                initialValues={{
-                    remember: true,
-                }}
-                onFinish={onFinish}
-                onFinishFailed={onFinishFailed}
-            >
-                <Form.Item
-                    label="Email Address"
-                    name="email_address"
-                    rules={[
-                        {
-                            required: true,
-                            message: 'Please input your email address!',
-                        },
-                    ]}
-                >
-                    <Input />
-                </Form.Item>
+    return (
+        <Row>
+            <Col span={8}>
+                <div style={{paddingTop : "30vh", margin: "auto", width : "55%"}}>
+                    <Form
+                        {...layout}
+                        name="basic"
+                        initialValues={{
+                            remember: true,
+                        }}
+                        onFinish={onFinish}
+                        onFinishFailed={onFinishFailed}
+                    >
+                        <Form.Item
+                            label="Email Address"
+                            name="email_address"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Please input your email address!',
+                                },
+                            ]}
+                        >
+                            <Input/>
+                        </Form.Item>
+                        <Form.Item
+                            label="ACL Token"
+                            name="token"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Please input your token!',
+                                },
+                            ]}
+                        >
+                            <Input.Password/>
+                        </Form.Item>
 
-                <Form.Item
-                    label="ACL Token"
-                    name="token"
-                    rules={[
-                        {
-                            required: true,
-                            message: 'Please input your token!',
-                        },
-                    ]}
-                >
-                    <Input.Password />
-                </Form.Item>
+                        <Form.Item {...tailLayout} name="remember" valuePropName="checked">
+                            <Checkbox>Remember me</Checkbox>
+                        </Form.Item>
 
-                <Form.Item {...tailLayout} name="remember" valuePropName="checked">
-                    <Checkbox>Remember me</Checkbox>
-                </Form.Item>
+                        <Form.Item {...tailLayout}>
+                            <Button type="primary" htmlType="submit">
+                                Submit
+                            </Button>
+                        </Form.Item>
+                    </Form>
+                </div>
+            </Col>
+            <Col style={{backgroundColor: "#f7f7f7", minHeight: "100vh"}} span={16}>
 
-                <Form.Item {...tailLayout}>
-                    <Button type="primary" htmlType="submit">
-                        Submit
-                    </Button>
-                </Form.Item>
-            </Form>
-        </div>
+            </Col>
+        </Row>
     )
 }
