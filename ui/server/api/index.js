@@ -7,7 +7,7 @@ app
         res.header("Access-Control-Allow-Origin", "*");
         res.header("Access-Control-Allow-Headers", "Origin, Content-Type, Accept");
         res.header("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS");
-
+        let token = req.headers.get("x-access-token"); // jwt({emailaddress:token:timestamp}) hs256
         logger.info({
             url: req.hostname,
             path: req.path,
@@ -16,7 +16,7 @@ app
             body: req.body,
             headers: req.headers,
         });
-
+        // acl and authentication.
         next();
     })
     .use(express.json())
