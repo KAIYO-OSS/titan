@@ -2,7 +2,6 @@ const bodyParser = require("body-parser");
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
-const listEndpoints = require("express-list-endpoints");
 const logger = require("./logger");
 const app = express();
 const api = require("./api")
@@ -15,7 +14,6 @@ var server = app
     .use(cors())
     .use(express.static(path.join(__dirname, "..", "build")))
     .use(bodyParser.json())
-    .use(express.static(path.join(__dirname, "build/")))
     .get("*", (req, res) => {
         res.sendFile(path.join(__dirname, "..", "build/index.html"));
     })

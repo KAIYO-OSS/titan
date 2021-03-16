@@ -1,26 +1,25 @@
 const express = require('express');
-const httpProxy = require('express-http-proxy');
-const app = express();
+const app = express.Router();
+const odinApi = require("./odin");
 
-const odinServiceProxy = httpProxy('https://odin.kaiyo.tech');
+app
+    .use(function (req, res, next) {
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Headers", "Origin, Content-Type, Accept");
+        res.header("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS");
 
-app.use((req, res, next) => {
-    /*
-        Authentication login -> preferably use a JWT token with no persistence
-        required. Just use a timestamp for the token-liveliness
+        logger.info({
+            url: req.hostname,
+            path: req.path,
+            query: req.query,
+            params: req.params,
+            body: req.body,
+            headers: req.headers,
+        });
 
-        Also, pack some user-claims data which will be required by the ACL module
-        for role-based resource filtering
+        next();
+    })
+    .use(express.json())
+    .use("/odin-api", odinApi)
 
-    */
-    next()
-})
-
-// Main a list of odin endpoints
-
-var odinGetDeploymentEndpoint = '/getDeployment/{deploymentId}'
-
-app.get('/getDeployment/{deploymentId}', (req, res, next) => {
-    odinServiceProxy(req, res, next)
-})
-
+module.exports = app;
