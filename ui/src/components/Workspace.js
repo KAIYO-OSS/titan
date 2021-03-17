@@ -33,10 +33,11 @@ export default function Workspace() {
     }
     return (
 
-        <div><Search onChange={() => {
-            console.log()
-        }} searchText={"Search Workspace"}/>
-            <Button style={{marginTop : "5px", marginBottom : "15px"}} onClick={toCreateWorkspace} type={"primary"}>
+        <div>
+            <Search onChange={() => {
+                console.log()
+            }} searchText={"Search Workspace"}/>
+            <Button style={{marginTop: "5px", marginBottom: "15px"}} onClick={toCreateWorkspace} type={"primary"}>
                 Create Workspace
             </Button>
             <List
@@ -45,7 +46,8 @@ export default function Workspace() {
                 renderItem={item => (
                     <List.Item>
                         <Card title={item.title}
-                              actions={[<a key="list-loadmore-edit">Delete</a>, <a href={"/workspace/id"} key="list-loadmore-more">View</a>]}>
+                              actions={[<a key="list-loadmore-edit">Delete</a>,
+                                  <a href={"/workspace/id"} key="list-loadmore-more">View</a>]}>
                             content
                         </Card>
                     </List.Item>

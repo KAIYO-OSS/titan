@@ -5,6 +5,7 @@ import './App.css';
 import Login from "./components/Login";
 import Landing from "./components/Landing";
 import CreateWorkspace from "./components/CreateWorkspace";
+import ViewService from "./components/ViewService";
 
 function App() {
     return (
@@ -16,7 +17,10 @@ function App() {
                 <Landing/>
             </Route>
             <Route exact path={"/workspace/create"}>
-                <CreateWorkspace />
+                <CreateWorkspace/>
+            </Route>
+            <Route exact path={"/service/:id"}>
+                <ViewService/>
             </Route>
         </Router>
     );

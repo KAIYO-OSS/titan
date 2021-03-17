@@ -25,9 +25,9 @@ export default function Landing() {
     }
     return (
         <div>
-            <NavBar currentState={setCurrent}/>
-            <div style={{marginLeft: "30px", marginRight: "30px", marginTop : "30px"}}>
-            {renderSwitch(current)}
+            <NavBar currentState={setCurrent} state={current}/>
+            <div style={{marginLeft: "30px", marginRight: "30px", marginTop: "30px"}}>
+                {renderSwitch(current)}
             </div>
         </div>
     )

@@ -7,7 +7,7 @@ export default function Login() {
 
     const history = useHistory();
     useEffect(() => {
-        if (localStorage.getItem("x-kaiyo-token") !== null) {
+        if (localStorage.getItem("x-access-token") !== null) {
             history.push("/")
         }
     }, [])
@@ -28,7 +28,7 @@ export default function Login() {
     };
     const onFinish = (values) => {
         console.log('Success:', values);
-        localStorage.setItem("x-kaiyo-token", "adas")
+        localStorage.setItem("x-access-token", "adas")
         history.push("/")
     };
     const onFinishFailed = (errorInfo) => {

@@ -1,22 +1,37 @@
 import React from "react";
 import {List} from "antd";
-import Search from "./Search";
 
 
 export default function Deployment() {
 
     const data = [
         {
-            title: 'Ant Design Title 1',
+            service_name: 'Service name',
+            workspace_name: 'workspace staging',
+            triggered_by: 'email_address',
+            time: 'time',
+            repo_link: 'github link'
         },
         {
-            title: 'Ant Design Title 2',
+            service_name: 'Service name',
+            workspace_name: 'workspace staging',
+            triggered_by: 'email_address',
+            time: 'time',
+            repo_link: 'github link'
         },
         {
-            title: 'Ant Design Title 3',
+            service_name: 'Service name',
+            workspace_name: 'workspace staging',
+            triggered_by: 'email_address',
+            time: 'time',
+            repo_link: 'github link'
         },
         {
-            title: 'Ant Design Title 4',
+            service_name: 'Service name',
+            workspace_name: 'workspace staging',
+            triggered_by: 'email_address',
+            time: 'time',
+            repo_link: 'github link'
         },
     ];
 
@@ -29,8 +44,11 @@ export default function Deployment() {
                 renderItem={item => (
                     <List.Item actions={[<a key="list-loadmore-edit">Approve</a>, <a key="list-loadmore-more">View</a>]}>
                         <List.Item.Meta
-                            title={<a href="https://ant.design">{item.title}</a>}
-                            description="Ant Design, a design language for background applications, is refined by Ant UED Team"
+                            title={<a href="https://ant.design">{item.service_name}</a>}
+                            description={<div><a href="https://ant.design">{item.workspace_name}</a><br/>
+                                <a href="https://ant.design">{item.time}</a><br/>
+                                <a href="https://ant.design">{item.triggered_by}</a><br/>
+                                <a href="https://ant.design">{item.repo_link}</a></div>}
                         />
                     </List.Item>
                 )}

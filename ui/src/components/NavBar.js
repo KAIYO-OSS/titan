@@ -4,10 +4,10 @@ import {useHistory} from "react-router";
 
 
 export default function NavBar(props) {
-    const [current, setCurrent] = useState("workspace")
+    const [current, setCurrent] = useState(props.state)
     const history = useHistory();
     useEffect(() => {
-        if (localStorage.getItem("x-kaiyo-token") === null) {
+        if (localStorage.getItem("x-access-token") === null) {
             history.push("/login")
         }
     }, [])
@@ -17,13 +17,14 @@ export default function NavBar(props) {
         props.currentState(e.key)
     }
     const logout = () => {
-        localStorage.removeItem("x-kaiyo-token");
+        localStorage.removeItem("x-access-token");
         history.push("/login")
     }
 
     return (
         <div>
-            <Menu theme="dark" className="sw-menu" style={{}} onClick={handleClick} selectedKeys={[current]} mode="horizontal">
+            <Menu theme="dark" className="sw-menu" style={{}} onClick={handleClick} selectedKeys={[current]}
+                  mode="horizontal">
 
                 <Menu.Item key="workspace">
                     Workspace
