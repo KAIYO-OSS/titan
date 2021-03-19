@@ -2,9 +2,6 @@ const express = require('express');
 const jwt = require('jwt-simple');
 const app = express.Router();
 const odinApi = require("./odin");
-const dbUrl = 'http://127.0.0.1:4600';
-//etcd = new Etcd(dbUrl)
-
 
 app
     .use(function (req, res, next) {
@@ -24,11 +21,11 @@ app
         *
         var accessToken = req.headers['x-access-token'];
         var claims = userInfoFromToken(accessToken);
-        
+
         if(typeof claims === 'string') {
             claims = JSON.parse(claims);
         }
-        
+
         if(Object.keys(claims).length === 0 && claims.constructor === Object) {
             return {
                 'statusCode': 401,
@@ -39,7 +36,7 @@ app
         next();
     })
     .use(express.json())
-    .use("/odin-api", odinApi)
+    .use("/odin", odinApi)
 
 
 function userInfoFromToken(accessToken) {
@@ -51,10 +48,10 @@ function userInfoFromToken(accessToken) {
 
 function authenticateTheUser(claims) {
     /*
-    DB operation 
+    DB operation
     1st type of data : <emailAddress>:email -> <Acl-Token>:acl,
     2nd type of data : <Acl-Token>:acl -> '['/getDeployment', '']:apiList'
-    
+
     emailFromClaimsData = claims['emailAddress'];
 
     try {
@@ -65,8 +62,8 @@ function authenticateTheUser(claims) {
             'statusCode': 500,
             'msg': 'Internal Server Error'
         }
-    } 
-    
+    }
+
     if(claims['aclToken'] !== aclTokenAgainstEmail) {
         return {
             'statusCode': 401,
@@ -83,7 +80,7 @@ function authenticateTheUser(claims) {
 function deploymentApprovals() {
     /*
     DB operation
-    GET call 
+    GET call
     3rd type of data : <emailAddress>:approvalEmail: '['{odin-deployment-req-1}']'
     */
    return;
@@ -95,7 +92,7 @@ function errorLogging(error) {
     POST call
     4rd type of data: <requestId>:error: <some-trackback>
     */
-    return;   
+    return;
 }
 
 module.exports = app;
