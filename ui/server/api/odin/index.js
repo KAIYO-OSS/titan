@@ -1,4 +1,3 @@
-
 const express = require("express");
 const app = express.Router();
 
@@ -17,14 +16,31 @@ app.get('/health', (req, res, next) => {
     res.send({'Hello': 'World'});
 });
 
-app.get('/docs', (req, res, next) => {
-    fetch('http://localhost:5000/docs').then(resp => {res.send(resp.body)});
+app.get('/details/workspace/info/:workspaceId', (req, res, next) => {
+    fetch(odinBaseUrl + workspaceInformation + req.params.workspaceId)
+        .then(resp => {
+            res.send(resp.body)
+        });
 });
+
+app.get('/details/workspace/:userId', (req, res, next) => {
+    fetch(odinBaseUrl + allUserWorkspaces + req.params.userId)
+        .then(odinResposne => {
+        return odinResposne.json()
+    })
+        .then(aboveResponse => {
+            res.send(aboveResponse.body)
+        });
+});
+
+app.post("/post")
 
 app.get('/', (req, res, next) => {
     fetch(odinBaseUrl + workspaceInformation)
-    .then(resp => resp.json())
-    .then(resp => {res.send(resp.body)});
+        .then(resp => resp.json())
+        .then(resp => {
+            res.send(resp.body)
+        });
 });
 
 module.exports = app;
