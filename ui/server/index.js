@@ -20,6 +20,6 @@ var server = app
     .get("*", (req, res) => {
         res.sendFile(path.join(__dirname, "..", "build/index.html"));
     })
-    .listen(8081, () => console.log(`Server started http://localhost:8081`));
+    .listen(8085, () => console.log(`Server started http://localhost:8081`));
 
 server.setTimeout(2000);

@@ -1,7 +1,8 @@
 const express = require("express");
 const app = express.Router();
 
-const odinBaseUrl = 'http://localhost:5000/';
+const odinBaseUrl = 'http://localhost:5000';
+// Ek baar yeh url check karliyo if it's followed by some endpoint
 
 /* Odin APIs */
 const deployWorkspace = '/odin/deploy/workspace/';
@@ -75,7 +76,7 @@ const currentConfiguration = '/details/service/configuration/';
 const allConfiguration = '/details/service/configurationall';
 const detailsHealthCheck = '/details/healthChecker'
 
-app.get('/details/healthCheck', (req, res, next) => {
+app.get('/details/healthChecker', (req, res, next) => {
     console.log('Details API healthchecker called...');
     fetch(odinBaseUrl + detailsHealthCheck)
         .then(odinResp => {
