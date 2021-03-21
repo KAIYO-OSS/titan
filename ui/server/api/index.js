@@ -2,14 +2,15 @@ const express = require('express');
 const jwt = require('jwt-simple');
 const app = express.Router();
 const odinApi = require("./odin");
-import * as acl from "./../acl";
+//import * as acl from "./../acl";
 
 app
     .use(function (req, res, next) {
         res.header("Access-Control-Allow-Origin", "*");
         res.header("Access-Control-Allow-Headers", "Origin, Content-Type, Accept");
         res.header("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS");
-        //let token = req.headers.get("x-access-token"); // jwt({emailaddress:token:timestamp}) hs256
+        
+        /*
         logger.info({
             url: req.hostname,
             path: req.path,
@@ -18,7 +19,7 @@ app
             body: req.body,
             headers: req.headers,
         });
-
+        
         var accessToken = req.headers['x-access-token'];
         var claims = acl.userInfoFromToken(accessToken);
 
@@ -32,7 +33,8 @@ app
                 'msg': 'Unauthorized'
             };
         }
-
+        */
+        console.log('Inside the api -> index.js')
         next();
     })
     .use(express.json())

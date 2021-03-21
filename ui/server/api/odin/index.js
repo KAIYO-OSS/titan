@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express.Router();
 
-const odinBaseUrl = 'http://localhost:8083/api';
+const odinBaseUrl = 'http://localhost:5000/';
 
 /* Odin APIs */
 const deployWorkspace = '/odin/deploy/workspace/';
@@ -73,6 +73,18 @@ const allUserDeployment = '/details/deployments/';
 const serviceInformation = '/details/service/info/'; 
 const currentConfiguration = '/details/service/configuration/';
 const allConfiguration = '/details/service/configurationall';
+const detailsHealthCheck = '/details/healthChecker'
+
+app.get('/details/healthCheck', (req, res, next) => {
+    console.log('Details API healthchecker called...');
+    fetch(odinBaseUrl + detailsHealthCheck)
+        .then(odinResp => {
+            return odinResp.json()
+        })
+        .then(aboveResp => {
+            res.send(aboveResp.body)
+        })
+})
 
 app.get('/health', (req, res, next) => {
     res.send({'Hello': 'World'});
