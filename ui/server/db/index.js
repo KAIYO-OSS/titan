@@ -1,7 +1,7 @@
 var DB_URL = require("../constants");
 
 const Etcd3 = require('etcd3');
-const client = new Etcd3();
+const client = new Etcd3.Etcd3();
 
 async function get(key) {
     let data;

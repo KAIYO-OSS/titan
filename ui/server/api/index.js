@@ -32,12 +32,12 @@ app
                 'msg': 'Unauthorized'
             };
         }
-        
+
         console.log('Inside the api -> index.js')
         next();
     })
     .use(express.json())
-    .use("/odin", odinApi)
+    .use("/", odinApi)
 
 
 module.exports = app;
