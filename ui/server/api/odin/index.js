@@ -2,7 +2,6 @@ const express = require("express");
 const app = express.Router();
 
 const odinBaseUrl = 'http://localhost:5000';
-// Ek baar yeh url check karliyo if it's followed by some endpoint
 
 /* Odin APIs */
 const deployWorkspace = '/odin/deploy/workspace/';

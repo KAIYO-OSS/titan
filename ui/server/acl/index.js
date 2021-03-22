@@ -1,14 +1,15 @@
-//import * as etcdClient from "./../db";
-//import * as globals from "./../constants";
+var etcdClient = require("./../db");
+var globals = require("./../constants");
 
-/* export for importing it from other files */
-export function authenticateTheUser(claims) {
+function authenticateTheUser(claims) {
 
-    /*
     emailFromClaimsData = claims['emailAddress'];
+    var aclTokenAgainstEmail = null;
 
     try {
-        aclTokenAgainstEmail = etcdClient.get(emailFromClaimsData.concat(':email'));
+        tokenArray = etcdClient.get(emailFromClaimsData.concat(':email')).split(":");
+        aclTokenAgainstEmail = tokenArray[0];
+        console.log('The aclTokenAgainstEmail =>', aclTokenAgainstEmail);
     }catch(e) {
         console.log('ETCD error encountered');
         return {
@@ -23,20 +24,24 @@ export function authenticateTheUser(claims) {
             'msg': 'Unauthorized'
         }
     }
-    */
+
     return {
         'statusCode': 200,
         'msg': 'Authentication Successful'
     }
 }
 
-/*
-export function userInfoFromToken(accessToken) {
+
+function userInfoFromToken(accessToken) {
     var secret = globals.JWT_SECRET;
     var decoded = jwt.decode(accessToken, secret);
     console.log(decoded);
     return decoded;
 }
-*/
+
+module.exports =  {
+    authenticateTheUser,
+    userInfoFromToken
+};
 
 

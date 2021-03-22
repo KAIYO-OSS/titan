@@ -1,16 +1,15 @@
-import {DB_URL} from "../constants";
+var DB_URL = require("../constants");
 
-const {Etcd3} = require('etcd3');
-const client = new Etcd3({hosts: DB_URL});
+const Etcd3 = require('etcd3');
+const client = new Etcd3();
 
-
-export async function get(key) {
+async function get(key) {
     let data;
     data = await client.get(key)
     return data;
 }
 
-export async function put(key, value) {
+async function put(key, value) {
     let data;
     data = await client
         .put(key)
@@ -19,15 +18,22 @@ export async function put(key, value) {
     return data
 }
 
-export async function prefixFind(key) {
+async function prefixFind(key) {
     let data;
     data = await client.getAll().prefix(key).keys();
     return data;
 }
 
-export async function del(key) {
+async function del(key) {
     let data;
     data = await client.delete().key(key);
     console.log(`delete executed with key := ${key}`)
     return data;
 }
+
+module.exports = {
+    get,
+    put,
+    prefixFind,
+    del
+};

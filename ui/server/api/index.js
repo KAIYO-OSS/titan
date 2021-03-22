@@ -2,7 +2,7 @@ const express = require('express');
 const jwt = require('jwt-simple');
 const app = express.Router();
 const odinApi = require("./odin");
-//import * as acl from "./../acl";
+const acl = require("./../acl");
 
 app
     .use(function (req, res, next) {
@@ -10,7 +10,6 @@ app
         res.header("Access-Control-Allow-Headers", "Origin, Content-Type, Accept");
         res.header("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS");
         
-        /*
         logger.info({
             url: req.hostname,
             path: req.path,
@@ -33,7 +32,7 @@ app
                 'msg': 'Unauthorized'
             };
         }
-        */
+        
         console.log('Inside the api -> index.js')
         next();
     })

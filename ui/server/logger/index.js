@@ -1,6 +1,4 @@
-//import {SERVICE_NAME} from "../constants";
-
-var SERVICE_NAME = 'Odin';
+var SERVICE_NAME = require("../constants");
 
 const bunyan = require("bunyan");
 
