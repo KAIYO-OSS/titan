@@ -3,6 +3,8 @@ const app = express.Router();
 
 const odinBaseUrl = 'http://localhost:5000';
 
+/* Consider
+
 /* Odin APIs */
 const deployWorkspace = '/odin/deploy/workspace/';
 const deleteWorkspace = '/odin/remove/workspace/'; // workspaceId
@@ -12,6 +14,7 @@ const deleteDeployment = '/odin/remove/service/'; // deploymentId
 
 app.post('/odin/deploy/workspace/', (req, res, next) => {
     console.log('Deploy workspace called with req =>', req.body);
+    /*
     fetch(odinBaseUrl + deployWorkspace)
         .then(odinResp => {
             return odinResp.json()
@@ -19,10 +22,17 @@ app.post('/odin/deploy/workspace/', (req, res, next) => {
         .then(aboveResp => {
             res.send(aboveResp.body)
         });
+    */
+    res.send( {
+        "status": 200,
+        "metadata": {},
+        "error": ""
+    });
 });
 
 app.delete('/odin/remove/workspace/:workspaceId', (req, res, next) => {
     console.log('Delete workspace called with workspaceId => ', req.params.workspaceId);
+    /*
     fetch(odinBaseUrl + deleteDeployment + req.params.workspaceId)
         .then(odinResp => {
             return odinResp.json()
@@ -30,10 +40,17 @@ app.delete('/odin/remove/workspace/:workspaceId', (req, res, next) => {
         .then(aboveResp => {
             res.send(aboveResp.body)
         });
+    */
+    res.send({
+        "status": 200,
+        "metadata": {},
+        "error": ""
+    });   
 });
 
 app.post('/odin/deploy/service/', (req, res, next) => {
     console.log('Deploy workspace called with req => ', req.body);
+    /*
     fetch(odinBaseUrl + deployService)
         .then(odinResp => {
             return odinResp.json()
@@ -41,10 +58,20 @@ app.post('/odin/deploy/service/', (req, res, next) => {
         .then(aboveResp => {
             res.send(aboveResp.body)
         });
+    */
+    res.send({
+        "status": 200,
+        "metadata": {
+                "url": "https://kaiyo.dev",
+                "ip": "10.22.178.188"
+        },
+        "error": ""
+    });
 });
 
 app.post('/odin/update/service/', (req, res, next) => {
     console.log('Update service called with req => ' , req.body);
+    /*
     fetch(odinBaseUrl + updateDeployService)
     .then(odinResp => {
         return odinResp.json()
@@ -52,10 +79,17 @@ app.post('/odin/update/service/', (req, res, next) => {
     .then(aboveResp => {
         res.send(aboveResp.body)
     })
+    */
+    res.send({
+        "status": 200,
+        "metadata": {},
+        "error": ""
+    });
 });
 
 app.delete('/odin/remove/service/:deploymentId', (req, res, next) => {
     console.log('Delete deployment called with req => ', req.params.deploymentId);
+    /*
     fetch(odinBaseUrl + deleteDeployment + req.params.deploymentId)
         .then(odinResp => {
             return odinResp.json()
@@ -63,6 +97,12 @@ app.delete('/odin/remove/service/:deploymentId', (req, res, next) => {
         .then(aboveResp => {
             res.send(aboveResp.body)
         });
+    */
+   res.send({
+        "status": 200,
+        "metadata": {},
+        "error": ""
+   });
 });
 
 /* Details APIs */
