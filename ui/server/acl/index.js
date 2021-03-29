@@ -1,13 +1,14 @@
+var jwt = require('jwt-simple');
 var etcdClient = require("./../db");
 var globals = require("./../constants");
 
 function authenticateTheUser(claims) {
 
-    emailFromClaimsData = claims['emailAddress'];
-    var aclTokenAgainstEmail = null;
+    let emailFromClaimsData = claims['emailAddress'];
+    let aclTokenAgainstEmail = null;
 
     try {
-        tokenArray = etcdClient.get(emailFromClaimsData.concat(':email')).split(":");
+        let tokenArray = etcdClient.get(emailFromClaimsData.concat(':email')).split(":");
         aclTokenAgainstEmail = tokenArray[0];
         console.log('The aclTokenAgainstEmail =>', aclTokenAgainstEmail);
     }catch(e) {
@@ -33,8 +34,8 @@ function authenticateTheUser(claims) {
 
 
 function userInfoFromToken(accessToken) {
-    var secret = globals.JWT_SECRET;
-    var decoded = jwt.decode(accessToken, secret);
+    let secret = globals.JWT_SECRET;
+    let decoded = jwt.decode(accessToken, secret);
     console.log(decoded);
     return decoded;
 }
