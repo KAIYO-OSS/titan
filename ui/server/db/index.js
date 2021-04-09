@@ -1,12 +1,16 @@
-var DB_URL = require("../constants");
+let DB_URL = require("../constants");
 
-const Etcd3 = require('etcd3');
-const client = new Etcd3.Etcd3(options = {hosts: '0.0.0.0:2379'});
+const {Etcd3} = require('etcd3');
+const client = new Etcd3({hosts: '0.0.0.0:2379'});
+
 
 async function get(key) {
-    let data;
-    data = await client.get(key)
-    return data;
+    try {
+        return await client.get(key)
+    } catch (e) {
+        console.log(e)
+        return null
+    }
 }
 
 async function put(key, value) {

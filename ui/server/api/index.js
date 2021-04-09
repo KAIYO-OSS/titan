@@ -1,15 +1,14 @@
 const express = require('express');
-const jwt = require('jwt-simple');
 const app = express.Router();
 const odinApi = require("./odin");
 const acl = require("./../acl");
 
 app
-    .use(function (req, res, next) {
+    .use(async function (req, res, next) {
         res.header("Access-Control-Allow-Origin", "*");
         res.header("Access-Control-Allow-Headers", "Origin, Content-Type, Accept");
         res.header("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS");
-        
+
         /*
         logger.info({
             url: req.hostname,
@@ -20,7 +19,7 @@ app
             headers: req.headers,
         });
         */
-       
+
         var accessToken = req.headers['x-access-token'];
         console.log('The accessToken passed -> ', accessToken);
         var claims = acl.userInfoFromToken(accessToken);
@@ -39,14 +38,14 @@ app
             };
         }
 
-        authResp = acl.authenticateTheUser(claims);
+        authResp = await acl.authenticateTheUser(claims);
 
-        if(authResp == 500) {
+        if(authResp === 500) {
             return {
                 'statusCode': 500,
                 'data': 'Something went wrong. Contact Tech Support.'
             };
-        }else if(authResp == 401) {
+        }else if(authResp === 401) {
             return {
                 'statusCode': 401,
                 'data': 'Incorrect user credentials.'
