@@ -28,6 +28,12 @@ async function prefixFind(key) {
     return data;
 }
 
+async function findAll() {
+    let data;
+    data = await client.getAll().keys();
+    return data;
+}
+
 async function del(key) {
     let data;
     data = await client.delete().key(key);
@@ -39,5 +45,6 @@ module.exports = {
     get,
     put,
     prefixFind,
-    del
+    del,
+    findAll
 };

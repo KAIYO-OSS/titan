@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express.Router();
-
+const fetch = require('node-fetch')
 const odinBaseUrl = 'http://localhost:5000';
 
 /* Consider
@@ -10,11 +10,11 @@ const deployWorkspace = '/odin/deploy/workspace/';
 const deleteWorkspace = '/odin/remove/workspace/'; // workspaceId
 const deployService = '/odin/deploy/service/';
 const updateDeployService = '/odin/update/service/';
-const deleteDeployment = '/odin/remove/service/'; // deploymentId  
+const deleteDeployment = '/odin/remove/service/'; // deploymentId
 
 app.post('/odin/deploy/workspace/', (req, res, next) => {
     console.log('Deploy workspace called with req =>', req.body);
-    
+
     fetch(odinBaseUrl + deployWorkspace)
         .then(odinResp => {
             return odinResp.json()
@@ -22,18 +22,18 @@ app.post('/odin/deploy/workspace/', (req, res, next) => {
         .then(aboveResp => {
             res.send(aboveResp.body)
         });
-   /*
-    res.send( {
-        "status": 200,
-        "metadata": {},
-        "error": ""
-    });
-    */
+    /*
+     res.send( {
+         "status": 200,
+         "metadata": {},
+         "error": ""
+     });
+     */
 });
 
 app.delete('/odin/remove/workspace/:workspaceId', (req, res, next) => {
     console.log('Delete workspace called with workspaceId => ', req.params.workspaceId);
-    
+
     fetch(odinBaseUrl + deleteDeployment + req.params.workspaceId)
         .then(odinResp => {
             return odinResp.json()
@@ -46,13 +46,13 @@ app.delete('/odin/remove/workspace/:workspaceId', (req, res, next) => {
         "status": 200,
         "metadata": {},
         "error": ""
-    });   
+    });
     */
 });
 
 app.post('/odin/deploy/service/', (req, res, next) => {
     console.log('Deploy workspace called with req => ', req.body);
-    
+
     fetch(odinBaseUrl + deployService)
         .then(odinResp => {
             return odinResp.json()
@@ -73,15 +73,15 @@ app.post('/odin/deploy/service/', (req, res, next) => {
 });
 
 app.post('/odin/update/service/', (req, res, next) => {
-    console.log('Update service called with req => ' , req.body);
-    
+    console.log('Update service called with req => ', req.body);
+
     fetch(odinBaseUrl + updateDeployService)
-    .then(odinResp => {
-        return odinResp.json()
-    })
-    .then(aboveResp => {
-        res.send(aboveResp.body)
-    })
+        .then(odinResp => {
+            return odinResp.json()
+        })
+        .then(aboveResp => {
+            res.send(aboveResp.body)
+        })
     /*
     res.send({
         "status": 200,
@@ -93,7 +93,7 @@ app.post('/odin/update/service/', (req, res, next) => {
 
 app.delete('/odin/remove/service/:deploymentId', (req, res, next) => {
     console.log('Delete deployment called with req => ', req.params.deploymentId);
-    
+
     fetch(odinBaseUrl + deleteDeployment + req.params.deploymentId)
         .then(odinResp => {
             return odinResp.json()
@@ -101,21 +101,21 @@ app.delete('/odin/remove/service/:deploymentId', (req, res, next) => {
         .then(aboveResp => {
             res.send(aboveResp.body)
         });
-   /*
-   res.send({
-        "status": 200,
-        "metadata": {},
-        "error": ""
-   });
-   */
+    /*
+    res.send({
+         "status": 200,
+         "metadata": {},
+         "error": ""
+    });
+    */
 });
 
 /* Details APIs */
-const workspaceInformation = '/details/workspace/info/'; 
-const allUserWorkspaces = '/details/workspaces/'; 
-const allUserServicesInWorkspace = '/details/services/'; 
-const allUserDeployment = '/details/deployments/'; 
-const serviceInformation = '/details/service/info/'; 
+const workspaceInformation = '/details/workspace/info/';
+const allUserWorkspaces = '/details/workspaces/';
+const allUserServicesInWorkspace = '/details/services/';
+const allUserDeployment = '/details/deployments/';
+const serviceInformation = '/details/service/info/';
 const currentConfiguration = '/details/service/configuration/';
 const allConfiguration = '/details/service/configurationall';
 const detailsHealthCheck = '/details/healthChecker'
@@ -128,6 +128,9 @@ app.get('/details/healthChecker', (req, res, next) => {
         })
         .then(aboveResp => {
             res.send(aboveResp.body)
+        })
+        .catch(e => {
+            res.send({exception: "error getting health : " + e, status: 500})
         })
 })
 

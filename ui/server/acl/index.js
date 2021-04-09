@@ -3,13 +3,13 @@ var globals = require("./../constants");
 const jwt = require('jsonwebtoken');
 
 async function authenticateTheUser(claims) {
-
-    let emailFromClaimsData = claims['emailAddress'] + ":email";
+    let emailFromClaimsData = claims['data']['emailAddress'] + ":email";
     let aclTokenAgainstEmail = null;
 
     try {
         let tokenArray = await etcdClient.get(emailFromClaimsData);
-        aclTokenAgainstEmail = tokenArray[0];
+        console.log(tokenArray)
+        aclTokenAgainstEmail = tokenArray;
         console.log('The aclTokenAgainstEmail =>', aclTokenAgainstEmail);
     }catch(e) {
         console.log(e);
@@ -17,7 +17,7 @@ async function authenticateTheUser(claims) {
         return 500;
     }
 
-    if(claims['aclToken'] !== aclTokenAgainstEmail) {
+    if(claims['data']['aclToken'] !== aclTokenAgainstEmail.split(":")[0]) {
         return 401;
     }
 
