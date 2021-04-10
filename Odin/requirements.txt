@@ -1,0 +1,9 @@
+fastapi==0.61.1
+uvicorn==0.12.2
+pymongo==3.11.0
+asyncio==3.4.3
+requests==2.24.0
+azure-servicebus==0.50.3
+opencensus-ext-azure==1.0.5
+prometheus_client==0.7.1
+starlette-exporter-0.7.0

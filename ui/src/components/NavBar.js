@@ -4,8 +4,8 @@ import {useHistory} from "react-router";
 
 
 export default function NavBar(props) {
-    const [current, setCurrent] = useState(props.state)
-    const history = useHistory();
+    const history = useHistory();debugger
+    console.log(props.state)
     useEffect(() => {
         if (localStorage.getItem("x-access-token") === null) {
             history.push("/login")
@@ -13,19 +13,20 @@ export default function NavBar(props) {
     }, [])
 
     const handleClick = (e) => {
-        setCurrent(e.key);
-        props.currentState(e.key)
+        history.push("/" + e.key)
     }
     const logout = () => {
+        debugger
         localStorage.removeItem("x-access-token");
         history.push("/login")
+        window.location.reload()
     }
 
     return (
         <div>
-            <Menu theme="dark" className="sw-menu" style={{}} onClick={handleClick} selectedKeys={[current]}
+            <Menu theme="dark" className="sw-menu" style={{}} onClick={handleClick}
+                  // selectedKeys={[props.state]}
                   mode="horizontal">
-
                 <Menu.Item key="workspace">
                     Workspace
                 </Menu.Item>

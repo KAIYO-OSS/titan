@@ -1,0 +1,32 @@
+replicaCount: 1
+
+serviceAccount:
+  name: "odin"
+
+image:
+  repository: kaiyocloud.azurecr.io/odin-kaiyo-service
+  tag: v1
+
+liveness:
+  endpoint: /health
+  initialDelaySeconds: 10
+  periodSeconds: 5
+
+readiness:
+  endpoint: /health
+  initialDelaySeconds: 10
+  periodSeconds: 5
+
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80
+
+resources:
+  limits:
+    cpu: 1500m
+    memory: 900Mi
+  requests:
+    cpu: 700m
+    memory: 512Mi
