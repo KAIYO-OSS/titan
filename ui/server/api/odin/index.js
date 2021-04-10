@@ -1,7 +1,7 @@
 const express = require("express");
 const axios = require("axios");
 const app = express.Router();
-const odinBaseUrl = 'http://localhost:5000';
+const odinBaseUrl = 'http://odin';
 
 /* Consider
 

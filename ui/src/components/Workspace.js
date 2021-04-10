@@ -47,7 +47,8 @@ export default function Workspace() {
                     <List.Item>
                         <Card title={item.title}
                               actions={[<a key="list-loadmore-edit">Delete</a>,
-                                  <a href={"/workspace/id"} key="list-loadmore-more">View</a>]}>
+                                  <a href={"/workspace/id"} key="list-loadmore-more">View</a>,
+                                  <Button type={"primary"} key="list-loadmore-edit">View services</Button>,]}>
                             content
                         </Card>
                     </List.Item>
