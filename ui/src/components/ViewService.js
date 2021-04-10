@@ -1,7 +1,6 @@
 import React, {useState} from "react";
 import {Button, PageHeader} from "antd";
 import {useHistory} from "react-router";
-import NavBar from "./NavBar";
 import Editor from "@monaco-editor/react";
 
 
@@ -11,7 +10,6 @@ export default function ViewService() {
 
     return (
         <div>
-            <NavBar currentState={setCurrent} state={current}/>
             <div style={{marginLeft: "30px", marginRight: "30px", marginTop: "30px"}}>
                 <PageHeader
                     className="site-page-header"

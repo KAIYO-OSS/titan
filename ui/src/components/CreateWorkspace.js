@@ -20,7 +20,6 @@ export default function CreateWorkspace() {
     const history = useHistory();
     return (
         <div>
-            <NavBar currentState={setCurrent} state={current}/>
             <div style={{marginLeft: "30px", marginRight: "30px", marginTop: "30px"}}>
                 <PageHeader
                     className="site-page-header"

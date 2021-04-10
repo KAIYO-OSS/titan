@@ -29,7 +29,7 @@ export default function Workspace() {
     ];
 
     const toCreateWorkspace = () => {
-        history.push("/workspace/create")
+        history.push("/workspaces/create")
     }
     return (
 
@@ -53,7 +53,6 @@ export default function Workspace() {
                     </List.Item>
                 )}
             />
-
         </div>
     )
 }
