@@ -2,13 +2,11 @@ import uvicorn
 from fastapi import FastAPI
 from starlette_exporter import PrometheusMiddleware, handle_metrics
 
-import util.serviceBusUtil as ServiceBusUtil
-from routers import servicebus, odin, odinsb, details, polling
+
+from routers import  odin, details, polling
 
 application = FastAPI()
-application.include_router(servicebus.router)
 application.include_router(odin.router)
-application.include_router(odinsb.router)
 application.include_router(details.router)
 application.include_router(polling.router)
 
@@ -22,7 +20,7 @@ async def root():
 
 
 if __name__ == "__main__":
-    ServiceBusUtil.azureLogin()
+    # ServiceBusUtil.azureLogin()
     # ServiceBusUtil.createAllQueues()
     # ServiceBusUtil.listenToQueues(ServiceBusUtil.allQueues)
     try:
