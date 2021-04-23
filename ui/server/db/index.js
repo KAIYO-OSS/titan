@@ -2,14 +2,18 @@ let DB_URL = require("../constants");
 
 const {Etcd3} = require('etcd3');
 const client = new Etcd3({hosts: '0.0.0.0:2379'});
+const logger = require('./../logger');
 
 
 async function get(key) {
     try {
-        return await client.get(key)
+        console.log(await findAll());
+        let token = await client.get(key);
+        console.log("The token from DB => %s", token);
+        return token;
     } catch (e) {
-        console.log(e)
-        return null
+        logger.info("ETCD GET error => %s", e);
+        return null;
     }
 }
 

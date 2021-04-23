@@ -1,37 +1,75 @@
 var etcdClient = require("./../db");
 var globals = require("./../constants");
 const jwt = require('jsonwebtoken');
+const logger = require("./../logger");
 
 async function authenticateTheUser(claims) {
-    let emailFromClaimsData = claims['data']['emailAddress'] + ":email";
+    var userEmailPrefix = "user:email_address-"
+    let emailFromClaimsData = userEmailPrefix.concat(claims['data']['emailAddress']);
+    console.log('emailFromClaimsData => %s', emailFromClaimsData);
     let aclTokenAgainstEmail = null;
 
     try {
         let tokenArray = await etcdClient.get(emailFromClaimsData);
-        console.log(tokenArray)
         aclTokenAgainstEmail = tokenArray;
-        console.log('The aclTokenAgainstEmail =>', aclTokenAgainstEmail);
+        logger.info("AclTokenAgainstEmail in authenticateUser => %s", aclTokenAgainstEmail);
+        
+        if(typeof aclTokenAgainstEmail == 'undefined' || claims['data']['aclToken'] !== aclTokenAgainstEmail) {
+            return {
+                'status': 401,
+                'msg': 'Wrong authentication token'
+            };
+        }
     }catch(e) {
-        console.log(e);
-        console.log('ETCD error encountered');
-        return 500;
+        logger.info('ETCD error in authenticateUser => %s', e);
+        return {
+            'status': 500,
+            'msg': 'Internal Server Error'
+        }
     }
 
-    if(claims['data']['aclToken'] !== aclTokenAgainstEmail.split(":")[0]) {
-        return 401;
-    }
-
-    return 200;
+    return {
+        'status': 200,
+        'msg': 'True'
+    };
 }
 
+async function getUserInfo(aclToken) {
+    
+    var aclKeywordPrefix = "acl:acl_token-";
+    let userInfoSearchKey = aclKeywordPrefix.concat(aclToken);
 
-function userInfoFromToken(accessToken) {
+    try {
+        let userInfo = await etcdClient.get(userInfoSearchKey);
+
+        if(typeof userInfo == 'undefined') {
+            return {
+                'status': 404,
+                'msg': 'No user information available'
+            }
+        }
+    }catch(e) {
+        logger.info("ETCD error in getUserInfo => %s", e);
+        return {
+            'status': 500,
+            'msg': 'Internal Server Error'
+        }
+    }
+
+    return {
+        'status': 200,
+        'msg': userInfo
+    };
+}
+
+function decodeTokenForUserInfo(accessToken) {
 
     var secret = globals.JWT_SECRET;
     var decoded = null;
 
     try {
         decoded = jwt.verify(accessToken, secret, {algorithm: "HS256"});
+        logger.info('The decoded in the userInfoFromToken => %s', decoded);
     }catch(e) {
         if(e instanceof jwt.JsonWebTokenError) {
             return {
@@ -54,7 +92,8 @@ function userInfoFromToken(accessToken) {
 
 module.exports =  {
     authenticateTheUser,
-    userInfoFromToken
+    decodeTokenForUserInfo,
+    getUserInfo
 };
 
 

@@ -8,6 +8,7 @@ const logger = require("./logger");
 const api = require("./api");
 const jwt = require("jsonwebtoken");
 const jwtSecret = "VmYq3t6v9y$B&E)H@McQfTjWnZr4u7x!";
+const create = require("./create");
 
 const app = express();
 
@@ -22,6 +23,7 @@ var server = app
     }, jwtSecret, {algorithm: 'HS256'})
     ))
     .use("/api", api)
+    .use("/create", create)
     .use(cors())
     .use(express.static(path.join(__dirname, "..", "build")))
     .use(bodyParser.json())

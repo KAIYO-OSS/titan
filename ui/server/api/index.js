@@ -2,6 +2,7 @@ const express = require('express');
 const app = express.Router();
 const odinApi = require("./odin");
 const acl = require("./../acl");
+const logger = require('./../logger');
 
 app
     .use(async function (req, res, next) {
@@ -22,7 +23,7 @@ app
 
         var accessToken = req.headers['x-access-token'];
         console.log('The accessToken passed -> ', accessToken);
-        var claims = acl.userInfoFromToken(accessToken);
+        var claims = acl.decodeTokenForUserInfo(accessToken);
 
         console.log('The claims acquired from the x-access-token passed =>');
         console.log(claims);
@@ -40,20 +41,19 @@ app
 
         authResp = await acl.authenticateTheUser(claims);
 
-        if(authResp === 500) {
-            return {
+        logger.info('The authResp inside API Index => %d', authResp);
+
+        if(authResp['status'] === 500) {
+            res.send({
                 'statusCode': 500,
                 'data': 'Something went wrong. Contact Tech Support.'
-            };
-        }else if(authResp === 401) {
-            return {
+            })
+        }else if(authResp['status'] === 401) {
+            res.send({
                 'statusCode': 401,
                 'data': 'Incorrect user credentials.'
-            };
-        }
-
-        /* Calling next() if authResp -> 200 */
-        console.log('Inside the api -> index.js')
+            })
+        }        
         next();
     })
     .use(express.json())

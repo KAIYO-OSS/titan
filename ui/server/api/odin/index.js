@@ -118,9 +118,6 @@ app.get('/details/healthChecker', (req, res, next) => {
         .then(aboveResp => {
             res.send(aboveResp.data)
         })
-        .catch(e => {
-            res.send({exception: "error getting health : " + e, status: 500})
-        })
 })
 
 app.get('/health', (req, res, next) => {
