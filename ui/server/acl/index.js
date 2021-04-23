@@ -38,9 +38,9 @@ async function getUserInfo(aclToken) {
     
     var aclKeywordPrefix = "acl:acl_token-";
     let userInfoSearchKey = aclKeywordPrefix.concat(aclToken);
-
+    var userInfo;
     try {
-        let userInfo = await etcdClient.get(userInfoSearchKey);
+        userInfo = await etcdClient.get(userInfoSearchKey);
 
         if(typeof userInfo == 'undefined') {
             return {
@@ -60,6 +60,30 @@ async function getUserInfo(aclToken) {
         'status': 200,
         'msg': userInfo
     };
+}
+
+async function isUserAdmin(aclToken) {
+    var userInfo;
+    try {
+        let userInfoResp = getUserInfo(aclToken);
+        if(typeof userInfoResp == 'undefined') {
+            return {
+                'status': 404,
+                'msg': 'No such user found'
+            }
+        }
+        userInfo = userInfoResp['msg'];
+    }catch(e) {
+        logger.info("DB error encountered in isUserAdmin => %s", e);
+        return {
+            'status': 500,
+            'msg': 'Internal Server Error'
+        }
+    }
+    return {
+        'status': 200,
+        'msg': userInfo
+    }
 }
 
 function decodeTokenForUserInfo(accessToken) {
@@ -89,6 +113,8 @@ function decodeTokenForUserInfo(accessToken) {
     };
 
 }
+
+
 
 module.exports =  {
     authenticateTheUser,
