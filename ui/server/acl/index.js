@@ -64,6 +64,7 @@ async function getUserInfo(aclToken) {
 
 async function isUserAdmin(aclToken) {
     var userInfo;
+    var adminCheck = new Boolean(0);
     try {
         let userInfoResp = getUserInfo(aclToken);
         if(typeof userInfoResp == 'undefined') {
@@ -80,9 +81,16 @@ async function isUserAdmin(aclToken) {
             'msg': 'Internal Server Error'
         }
     }
+    /* Check to find out if the user making the request is an admin */
+    if(userInfo['role'] == 'ADMIN') {
+        adminCheck = Boolean(1);
+    }else {
+        adminCheck = Boolean(0);
+    }
+
     return {
         'status': 200,
-        'msg': userInfo
+        'msg': adminCheck
     }
 }
 
@@ -114,12 +122,11 @@ function decodeTokenForUserInfo(accessToken) {
 
 }
 
-
-
 module.exports =  {
     authenticateTheUser,
     decodeTokenForUserInfo,
-    getUserInfo
+    getUserInfo,
+    isUserAdmin
 };
 
 
