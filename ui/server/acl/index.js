@@ -62,6 +62,15 @@ async function getUserInfo(aclToken) {
     };
 }
 
+/* 
+   We might not even need this function 
+   once I start packing all the claims 
+   inside the jwt-token passed.
+   For that I'll be sending more values
+   in the json will be jwt-encoded after
+   successful login 
+*/
+
 async function isUserAdmin(aclToken) {
     var userInfo;
     var adminCheck = new Boolean(0);

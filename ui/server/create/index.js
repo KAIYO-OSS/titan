@@ -126,18 +126,47 @@ app
         }
 
         logger.info("The user with aclToken -> %s has user deactivation rights", aclOfReqMaker);
-        
+
         var emailAddressForDeactivation = req.body['emailId'];
 
         var emailKeyPrefix = "user:email_address-";
         var userKey = emailKeyPrefix.concat(emailAddressForDeactivation);
+        var aclOfUserToBeDeactivated;
 
         try {
-
+            aclOfUserToBeDeactivated = etcdClient.get(userKey);
+            logger.info("The acl-token of user to be deactived -> %s", aclOfUserToBeDeactivated);
+            if(typeof aclOfUserToBeDeactivated == 'undefined') {
+                res.send({
+                    'status': 404,
+                    'msg': 'The user to be deleted not found'
+                })
+            }
         }catch(e) {
-
+            logger.info("DB error while fetching acl-token of user to be deactivated -> %s", e);
+            res.send({
+                'status': 500,
+                'msg': 'Internal Server Error'
+            })
         }
         
+        var userDataByEmailPrefix = "acl:acl_token-"
+        var userDataSearchKey = userDataByEmailPrefix.concat(aclOfUserToBeDeactivated);
+        var userInfo;
+
+        try {
+            userInfo = etcdClient.get(userDataSearchKey);    
+            if(typeof userInfo == 'undefined') {
+                logger.info("userInfo not found for deactivateUser against the key -> %s", userDataSearchKey);
+                res.send({
+                    'status': 404,
+                    'msg': 'User to be deleted not found'
+                })
+            }
+        }catch(e) {
+            logger.info("user")
+        }
+
     });
 
 module.exports = app;
