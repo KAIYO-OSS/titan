@@ -1,6 +1,7 @@
 from pydantic.main import BaseModel
 import json
 
+
 class WorkspaceModel(BaseModel):
     _id: str
     userId: str
@@ -18,5 +19,5 @@ class WorkspaceModel(BaseModel):
     toBeDeleted: bool
 
     def toJSON(self):
-        return json.dumps(self, default=lambda o: o.__dict__, 
-            sort_keys=True, indent=4)
+        return json.dumps(self, default=lambda o: o.__dict__,
+                          sort_keys=True, indent=4)
