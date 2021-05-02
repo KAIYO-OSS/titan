@@ -8,7 +8,7 @@ const logger = require("./logger");
 const api = require("./api");
 const jwt = require("jsonwebtoken");
 const jwtSecret = "VmYq3t6v9y$B&E)H@McQfTjWnZr4u7x!";
-const create = require("./create");
+const users = require("./users");
 
 const app = express();
 
@@ -23,7 +23,7 @@ var server = app
     }, jwtSecret, {algorithm: 'HS256'})
     ))
     .use("/api", api)
-    .use("/create", create)
+    .use("/users", users)
     .use(cors())
     .use(express.static(path.join(__dirname, "..", "build")))
     .use(bodyParser.json())
@@ -32,4 +32,4 @@ var server = app
     })
     .listen(8085, () => console.log(`Server started http://localhost:8085`));
 
-server.setTimeout(2000);
+//server.setTimeout(2000);
