@@ -1,23 +1,23 @@
-const etcdClient = require("./../db");
-const globals = require("./../constants");
+var etcdClient = require("./../db");
+var globals = require("./../constants");
 const jwt = require('jsonwebtoken');
 const logger = require("./../logger");
 
 async function authenticateTheUser(claims) {
-    let userEmailPrefix = "user:email_address-"
+    var userEmailPrefix = "user:email_address-"
     let emailFromClaimsData = userEmailPrefix.concat(claims['data']['emailAddress']);
     console.log('emailFromClaimsData => %s', emailFromClaimsData);
-    let aclTokenAgainstEmail;
+    let aclTokenAgainstEmail = null;
 
     try {
-        let t = await etcdClient.get(emailFromClaimsData);
-        aclTokenAgainstEmail = t;
+        let tokenArray = await etcdClient.get(emailFromClaimsData);
+        aclTokenAgainstEmail = tokenArray;
         logger.info("AclTokenAgainstEmail in authenticateUser => %s", aclTokenAgainstEmail);
         
-        if(typeof aclTokenAgainstEmail == 'undefined' || claims['data']['acl'] !== aclTokenAgainstEmail) {
+        if(typeof aclTokenAgainstEmail == 'undefined' || claims['data']['aclToken'] !== aclTokenAgainstEmail) {
             return {
-                'status': 403,
-                'msg': 'Wrong acl token. Access denied.'
+                'status': 401,
+                'msg': 'Wrong authentication token'
             };
         }
     }catch(e) {
@@ -62,48 +62,36 @@ async function getUserInfo(aclToken) {
     };
 }
 
-/* 
-   We might not even need this function 
-   once I start packing all the claims 
-   inside the jwt-token passed.
-   For that I'll be sending more values
-   in the json will be jwt-encoded after
-   successful login 
-*/
-
-async function isUserAdmin(accessToken) {
-    let userInfo, role;
-    let adminCheck = new Boolean(0);
-
-    if(role == 'ADMIN') {
-        return Boolean(1);
-    }
-    return Boolean(0);
-}
-
-function encodeClaimsIntoToken(claims) {
-
-    let secret = globals.JWT_SECRET;
-    let encoded = null;
-
+async function isUserAdmin(aclToken) {
+    var userInfo;
+    var adminCheck = new Boolean(0);
     try {
-        encoded = jwt.sign(claims, secret, {algorithm: "HS256"});
-        logger.info('The encoded string returned => %s', encoded);
-    }catch(e) {
-        if(e instanceof jwt.JsonWebTokenError) {
+        let userInfoResp = getUserInfo(aclToken);
+        if(typeof userInfoResp == 'undefined') {
             return {
-                'status': 500,
-                'data': 'Internal Server Error'
-            };
+                'status': 404,
+                'msg': 'No such user found'
+            }
+        }
+        userInfo = userInfoResp['msg'];
+    }catch(e) {
+        logger.info("DB error encountered in isUserAdmin => %s", e);
+        return {
+            'status': 500,
+            'msg': 'Internal Server Error'
         }
     }
-
-    logger.info("The claims data has been successfully encoded into the access token");
+    /* Check to find out if the user making the request is an admin */
+    if(userInfo['role'] == 'ADMIN') {
+        adminCheck = Boolean(1);
+    }else {
+        adminCheck = Boolean(0);
+    }
 
     return {
         'status': 200,
-        'data': encoded
-    };
+        'msg': adminCheck
+    }
 }
 
 function decodeTokenForUserInfo(accessToken) {
@@ -138,8 +126,7 @@ module.exports =  {
     authenticateTheUser,
     decodeTokenForUserInfo,
     getUserInfo,
-    isUserAdmin,
-    encodeClaimsIntoToken
+    isUserAdmin
 };
 
 

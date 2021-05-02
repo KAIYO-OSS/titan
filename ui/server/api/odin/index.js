@@ -182,7 +182,7 @@ app.get('/details/service/configurationall', (req, res, next) => {
 
 
 app.get('/polling/deploy/workspace/:workspaceId', (req, res, next) => {
-    console.log('Polling users workspace called for workspaceId => ' + req.params.workspaceId);
+    console.log('Polling create workspace called for workspaceId => ' + req.params.workspaceId);
     axios.get(odinBaseUrl + pollingCreateWorkspace + req.params.workspaceId)
         .then(aboveResp => {
             res.send(aboveResp.data)
