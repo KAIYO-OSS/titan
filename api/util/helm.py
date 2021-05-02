@@ -23,14 +23,14 @@ class Helm():
 
     @staticmethod
     def deployService(service_name, chart_name, values):
-        helmDeployService = "helm install {service_name} {chart_name} ".format(service_name=service_name,
+        helmDeployService = "helm install {service_name} {chart_name}".format(service_name=service_name,
                                                                              chart_name=chart_name)
         for v in values:
             helmDeployService += " --set "
             helmDeployService += v + "=" + values[v]
 
         # overriding fullname of service
-        helmDeployService += " --set fullnameOverride={service_name} ".format(service_name=service_name)
+        # helmDeployService += " --set fullnameOverride={service_name} ".format(service_name=service_name)
         out = Utils.executeCommand(helmDeployService)
         time.sleep(10)
         return out
@@ -52,7 +52,7 @@ class Helm():
 
     @staticmethod
     def listAllServices():
-        list_command = "helm list --all -o json "
+        list_command = "helm list -a -o json"
         return Utils.executeCommand(list_command)
 
     @staticmethod
@@ -67,7 +67,6 @@ class Helm():
 """
 TODO
 
-helm get values -- gives yaml files
 helm rollback
 
 """

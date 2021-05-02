@@ -1,3 +1,4 @@
+from pydantic.fields import Optional
 from pydantic.main import BaseModel
 import json
 
@@ -7,7 +8,7 @@ class DeployRequest(BaseModel):
     # workspaceID: str
     chart_name: str
     service_name: str
-    values: dict
+    values: Optional[dict]
 
     # env: str
     # ttl: int
