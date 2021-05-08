@@ -5,7 +5,6 @@ const client = new Etcd3({hosts: '0.0.0.0:2379'});
 
 const logger = require('./../logger');
 
-
 async function get(key) {
     try {
         let token = await client.get(key);
