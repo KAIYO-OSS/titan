@@ -11,8 +11,8 @@ const app = express();
 
 app
     .use(express.json())
-    .use("/search", async function(req, res, next) {
-        let secret = 'kaiyo@123';
+    .use('/search', async function(req, res, next) {
+        let secret = globals.APP_COMMON_SECRET;
         let k = req.body['k'];
         if((typeof req.headers['secret'] == 'undefined') || req.headers['secret'] != secret) {
             logger.info('Wrong secret key has been passed');
@@ -21,15 +21,15 @@ app
                 'msg': 'Access denied'
             });
         }
+
         let v;
         try {
             v = await etcdClient.get(k);
             if(k.includes('acl:acl_token')) {
                 v = JSON.parse(v);
             }
-            console.log(v);
         }catch(e) {
-            logger.info('DB error encountered in search function');
+            logger.info('DB error encountered in SEARCH function');
             res.status(500);
             res.send({
                 'msg': 'Internal server error'
@@ -41,23 +41,24 @@ app
             'msg': v
         });
     })
-    .use("/insert", async function(req, res, next) {
+    .use('/insert', async function(req, res, next) {
         /*
             This function will be used for inserting key-value
             pairs in the ETCD DB for testing various endpoints.
             In the headers, pass the 'secret' to make an
             authenticated request.
          */
-        let secret = 'kaiyo@123'; // This password should be passed int he headers
+        let secret = globals.APP_COMMON_SECRET; // This password should be passed int he headers
         if((typeof req.headers['secret'] == 'undefined') || req.headers['secret'] != secret) {
-            logger.info("Wrong secret key has been passed");
+            logger.info('Wrong secret key has been passed');
             res.status(403);
             res.send({
                 'msg': 'Access denied'
             });
         }
+
         let k = req.body['k'];
-        let v = req.body['v']; // This could be string or json
+        let v = req.body['v'];
 
         if(k.includes('acl:acl_token')) {
             v = JSON.stringify(v);
@@ -78,20 +79,20 @@ app
             'msg': 'Data inserted successfully'
         });
     })
-    .use("/login", async function(req, res, next) {
+    .use('/login', async function(req, res, next) {
 
         let email = req.body['emailId'];
         let acl = req.body['acl'];
-        let aclSearchKey = "user:email_address-".concat(email);
+        let aclSearchKey = 'user:email_address-'.concat(email);
         let aclTokenInDB;
 
         try {
             aclTokenInDB = await etcdClient.get(aclSearchKey);
-            console.log("The aclTokenInDB -> %s", aclTokenInDB);
+            console.log('The aclTokenInDB -> ', aclTokenInDB);
             if(typeof aclTokenInDB == 'undefined') {
                 logger.info("No user found during login for aclSearchKey -> %s", aclSearchKey);
+                res.status(403);
                 res.send({
-                    'status': 403,
                     'msg': 'Access denied'
                 })
             }
@@ -103,7 +104,7 @@ app
                 })
             }
         }catch(e) {
-            logger.info("DB error during login", e);
+            logger.info('DB error during login => ', e);
             res.status(500);
             res.send({'msg':'Internal Server Error'});
         }
@@ -116,20 +117,15 @@ app
             frequently can be read with DB transactions.
         */
 
-        let userInfoSearchKey = "acl:acl_token-".concat(aclTokenInDB);
+        let userInfoSearchKey = 'acl:acl_token-'.concat(aclTokenInDB);
         let userInfoForClaims;
 
         try {
             userInfoForClaims = await etcdClient.get(userInfoSearchKey);
             if(typeof userInfoForClaims == 'undefined') {
-                logger.info("user data not found for userInfoSearchKey -> %s", userInfoSearchKey);
+                logger.info('user data not found for userInfoSearchKey -> %s', userInfoSearchKey);
                 res.status(404);
                 res.send({'msg': 'User not found'});
-                /*
-                    The status to be returned in this case can
-                    be discussed later but right now 'not found'
-                    seems just appropriate
-                */
             }
         }catch(e) {
             logger.info("DB error encountered in login while fetching user data", e);
@@ -138,11 +134,6 @@ app
         }
 
         userInfoForClaims = JSON.parse(userInfoForClaims);
-        /*
-            Sample creds -> 
-                anurag.sarkar250@gmail.com
-                abc123
-        */
 
         let claimsToBeEncoded = {
             'email': email,
@@ -152,8 +143,8 @@ app
             'timestamp': Math.floor(Date.now()/1000)
         };
 
-        //let sessionTokenResp = acl.encodeClaimsIntoToken(claimsToBeEncoded);
-        let sessToken = jwt.sign(claimsToBeEncoded, globals.JWT_SECRET, {algorithm: 'HS256'});
+        let sessToken = jwt.sign(claimsToBeEncoded, globals.JWT_SECRET,
+            {algorithm: 'HS256'});
 
         res.setHeader('x-access-token', sessToken);
         res.status(200);
@@ -162,7 +153,7 @@ app
         });
         
     })
-    .use("/create", async function(req, res, next) {
+    .use('/create', async function(req, res, next) {
         res.header("Access-Control-Allow-Origin", "*");
         res.header("Access-Control-Allow-Headers", "Origin, Content-Type, Accept");
         res.header("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS");
@@ -227,9 +218,9 @@ app
 
         try {
             let x = etcdClient.put(aclTokenFullKey, JSON.stringify(userData));
-            logger.info("New user Information inserted successfully")
+            logger.info('New user Information inserted successfully');
         } catch (e) {
-            logger.info("DB error encountered in createUser while adding userInfo => %s", e);
+            logger.info('DB error encountered in createUser while adding userInfo => %s', e);
             res.status(500);
             res.send({
                 'msg': 'Internal Server Error'
@@ -241,7 +232,7 @@ app
             'msg': 'User created successfully'
         });
     })
-    .use("/deactivate", async function(req, res, next) {
+    .use('/deactivate', async function(req, res, next) {
         res.header("Access-Control-Allow-Origin", "*");
         res.header("Access-Control-Allow-Headers", "Origin, Content-Type, Accept");
         res.header("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS");
@@ -269,17 +260,18 @@ app
             })
         }
 
-        logger.info("The user with aclToken -> %s has user deactivation rights", aclOfReqMaker);
+        logger.info('The user with aclToken -> %s has user deactivation rights',
+            aclOfReqMaker);
 
         let emailAddressForDeactivation = req.body['emailId'];
 
-        let emailKeyPrefix = "user:email_address-";
+        let emailKeyPrefix = 'user:email_address-';
         let userKey = emailKeyPrefix.concat(emailAddressForDeactivation);
         let aclOfUserToBeDeactivated;
 
         try {
             aclOfUserToBeDeactivated = etcdClient.get(userKey);
-            logger.info("The acl-token of user to be deactived -> %s", aclOfUserToBeDeactivated);
+            logger.info('The acl-token of user to be deactived -> %s', aclOfUserToBeDeactivated);
             if(typeof aclOfUserToBeDeactivated == 'undefined') {
                 res.status(404);
                 res.send({
@@ -287,28 +279,28 @@ app
                 })
             }
         }catch(e) {
-            logger.info("DB error while fetching acl-token of user to be deactivated -> %s", e);
+            logger.info('DB error while fetching acl-token of user to be deactivated -> %s', e);
             res.status(500);
             res.send({
                 'msg': 'Internal Server Error'
             })
         }
         
-        let userDataByEmailPrefix = "acl:acl_token-"
+        let userDataByEmailPrefix = 'acl:acl_token-';
         let userDataSearchKey = userDataByEmailPrefix.concat(aclOfUserToBeDeactivated);
         let userInfo;
 
         try {
             userInfo = etcdClient.get(userDataSearchKey);    
             if(typeof userInfo == 'undefined') {
-                logger.info("userInfo not found for deactivateUser against the key -> %s", userDataSearchKey);
+                logger.info('userInfo not found for deactivateUser against the key -> %s', userDataSearchKey);
                 res.status(404);
                 res.send({
                     'msg': 'User to be deleted not found'
                 })
             }
         }catch(e) {
-            logger.info("DB error encountered in deactiveUser -> %s", e);
+            logger.info('DB error encountered in deactiveUser -> ', e);
             res.status(500);
             res.send({
                 'msg': 'Internal Server Error'
@@ -322,17 +314,17 @@ app
         */
 
         try {
-            var ins = etcdClient.put(userDataSearchKey, userInfo);
+            let ins = etcdClient.put(userDataSearchKey, userInfo);
         }catch(e) {
-            logger.info("DB error encountered in deactivateUser while putting formatted" +
-            "user data -> %s", e);
+            logger.info('DB error encountered in deactivateUser while putting formatted' +
+            'user data -> %s', e);
             res.status(500);
             res.send({
                 'msg': 'Internal Server Error'
             })
         }
 
-        logger.info("User successfully deactivated");
+        logger.info('User successfully deactivated');
         res.status(200);
         res.send({
             'msg': 'User successfully deactivated'
