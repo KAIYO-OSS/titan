@@ -9,12 +9,12 @@ module.exports = Object.freeze({
     ODIN_SERVICE_URL: process.env.ODIN_SERVICE_URL || 'http://5cf6f1c0ebf6.ngrok.io',
     DEPLOY_WORKSPACE_ENDPOINT: process.env.DEPLOY_WORKSPACE_ENDPOINT || '/odin/deploy/workspace',
     DELETE_WORKSPACE_ENDPOINT: process.env.DELETE_WORKSPACE_ENDPOINT || '/odin/remove/workspace/',
-    DEPLOY_SERVICE_ENPOINT: process.env.DEPLOY_SERVICE_ENDPOINT || '/odin/service/deploy',
-    UPDATE_SERVICE_ENDPOINT: process.env.UPDATE_SERVICE_ENDPOINT || '/odin/update/service',
-    DELETE_SERVICE_ENDPOINT: process.env.DELETE_SERVICE_ENDPOINT || '/odin/remove/service/',
+    DEPLOY_SERVICE_ENPOINT: process.env.DEPLOY_SERVICE_ENDPOINT || '/odin/service',
+    UPDATE_SERVICE_ENDPOINT: process.env.UPDATE_SERVICE_ENDPOINT || '/odin/service',
+    DELETE_SERVICE_ENDPOINT: process.env.DELETE_SERVICE_ENDPOINT || '/odin/service/',
     WORKSPACE_INFORMATION_ENDPOINT: process.env.WORKSPACE_INFORMATION_ENDPOINT || '/details/workspace/info/',
     ALL_WORKSPACES_ENDPOINT: process.env.ALL_WORKSPACES_ENDPOINT || '/details/workspaces/',
-    ALL_SERVICES_IN_WORKSPACE_ENDPOINT: process.env.ALL_SERVICES_IN_WORKSPACE_ENDPOINT || '/details/services',
+    ALL_SERVICES_IN_WORKSPACE_ENDPOINT: process.env.ALL_SERVICES_IN_WORKSPACE_ENDPOINT || '/odin/services',
     ALL_DEPLOYMENTS_ENDPOINT: process.env.ALL_DEPLOYMENTS_ENDPOINT || '/details/deployments/',
     SERVICE_INFORMATION_ENDPOINT: process.env.SERVICE_INFORMATION_ENDPOINT || '/details/service/info/',
     CURRENT_CONFIGURATION_ENDPOINT: process.env.CURRENT_CONFIGURATION_ENDPOINT || '/details/service/configuration/',
@@ -25,7 +25,6 @@ module.exports = Object.freeze({
     POLLING_DEPLOY_SERVICE_ENDPOINT: process.env.POLLING_DEPLOY_SERVICE_ENDPOINT || '/polling/deploy/service/',
     POLLING_UPDATE_SERVICE_ENDPOINT: process.env.POLLING_UPDATE_SERVICE_ENDPOINT || '/polling/update/service/',
     POLLING_DELETE_SERVICE_ENDPOINT: process.env.POLLING_DELETE_SERVICE_ENDPOINT || '/polling/delete/service'
-
 });
 
 
