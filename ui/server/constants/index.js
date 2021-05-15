@@ -11,6 +11,8 @@ module.exports = Object.freeze({
     DELETE_WORKSPACE_ENDPOINT: process.env.DELETE_WORKSPACE_ENDPOINT || '/odin/remove/workspace/',
     DEPLOY_SERVICE_ENPOINT: process.env.DEPLOY_SERVICE_ENDPOINT || '/odin/service',
     UPDATE_SERVICE_ENDPOINT: process.env.UPDATE_SERVICE_ENDPOINT || '/odin/service',
+    GET_SERVICE_ENDPOINT: process.env.GET_SERVICE_ENDPOINT || '/odin/service/',
+    GET_ALL_SERVICES_ENDPOINT: process.env.GET_ALL_SERVICES_ENDPOINT || '/odin/services',
     DELETE_SERVICE_ENDPOINT: process.env.DELETE_SERVICE_ENDPOINT || '/odin/service/',
     WORKSPACE_INFORMATION_ENDPOINT: process.env.WORKSPACE_INFORMATION_ENDPOINT || '/details/workspace/info/',
     ALL_WORKSPACES_ENDPOINT: process.env.ALL_WORKSPACES_ENDPOINT || '/details/workspaces/',

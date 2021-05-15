@@ -5,42 +5,53 @@ const odinBaseUrl = 'http://5cf6f1c0ebf6.ngrok.io'
 const logger = require('./../../logger');
 const globals = require('./../../constants')
 
-
-app.post('/odin/deploy/workspace/', (req, res, next) => {
-    let apiUrl = globals.ODIN_SERVICE_URL + globals.DEPLOY_WORKSPACE_ENDPOINT;
-    logger.info('Calling URL => ', apiUrl, ' with req => ', JSON.stringify(req.body));
-    axios.post(apiUrl, {
-        body: JSON.stringify(req.body),
-        headers: {
-            'Content-Type': 'application/json'
-        }
+// Deploy a service
+app.post('/odin/service', (req, res, next) => {
+    let apiUrl = globals.ODIN_SERVICE_URL + globals.DEPLOY_SERVICE_ENPOINT;
+    let logObj = {
+        'path': globals.DEPLOY_SERVICE_ENPOINT,
+        'method': 'POST',
+        'headers': req.headers,
+        'input': req.body
+    }
+    axios.post(apiUrl,
+        JSON.stringify(req.body),
+        {
+            headers: {
+                'Content-Type': 'application/json'
+            }
         }).then(rep => {
             res.send(rep.data)
         }).catch(err => {
-            logger.info('Exception caught while calling => ',
-                        globals.DEPLOY_WORKSPACE_ENDPOINT,
-                        ' with req => ', JSON.stringify(req.body));
-            // res.status(err.response.status)
+            logObj.note('Exception encounted = ', err.response);
+            logger.error(logObj);
             res.send({
                 'msg': err.response
             })
     })
 });
 
-app.delete('/odin/remove/workspace/:workspaceId', (req, res, next) => {
-    let apiUrl = globals.ODIN_SERVICE_URL + globals.DELETE_WORKSPACE_ENDPOINT +
-        req.params.workspaceId;
-    logger.info("URL called => %s", apiUrl, " with workspaceId => %s",
-        req.params.workspaceId);
-    axios.delete(apiUrl)
-        .then(rep => {
+// Delete a service with serviceId
+app.delete('/odin/service/:serviceId', (req, res, next) => {
+    let apiUrl = globals.ODIN_SERVICE_URL + globals.DELETE_SERVICE_ENDPOINT
+                 + req.params.serviceId;
+    let logObj = {
+        'path': globals.DELETE_SERVICE_ENDPOINT + req.params.serviceId,
+        'method': 'DELETE',
+        'headers': req.headers,
+        'input': req.params.serviceId
+    }
+    axios.delete(apiUrl,{
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(rep => {
             res.send({
                 'msg': rep.data
             })
         }).catch(err => {
-            logger.info("Exception caught while calling API => %s",
-                globals.DELETE_WORKSPACE_ENDPOINT, " with workspaceId => ",
-                req.params.workspaceId);
+            logObj.note('Exception encountered = ', e.message);
+            logger.info(logObj);
             res.status(err.response.status);
             res.send({
                 'msg': err.response.statusText
@@ -49,33 +60,71 @@ app.delete('/odin/remove/workspace/:workspaceId', (req, res, next) => {
 
 });
 
-app.post('/odin/service/deploy', (req, res, next) => {
-    let apiUrl = globals.ODIN_SERVICE_URL + globals.DEPLOY_SERVICE_ENPOINT;
-    logger.info('Odin Deploy Service API called =>', apiUrl, "with req => ",
-        JSON.stringify(req.body));
-    axios.post(apiUrl,  JSON.stringify(req.body),{
+// Get a service
+app.get('/odin/service/:serviceId', (req, res, next) => {
+    let apiUrl = globals.ODIN_SERVICE_URL + globals.GET_SERVICE_ENDPOINT
+                 + req.params.serviceId;
+    let logObj = {
+        'path': globals.GET_SERVICE_ENDPOINT + req.params.serviceId,
+        'method': 'GET',
+        'headers': req.headers,
+        'input': req.params.serviceId
+    }
+    axios.put(apiUrl,{
         headers: {
             'Content-Type': 'application/json'
         }
     }).then(rep => {
-            res.send({
-                'msg': rep.data
-            })
-        }).catch(err => {
-            logger.info('Exception caught while calling API => ',
-                globals.DEPLOY_SERVICE_ENPOINT, ' with REQ => ',
-                JSON.stringify(req.body));
-            res.status(err.response.status);
-            res.send({
-                'msg': err.response.statusText
-            })
+        res.send({
+            'msg': rep.data
+        })
+    }).catch(err => {
+        logObj.note('Error encountered = ', err.response);
+        logger.error(logObj);
+        res.status(err.status);
+        res.send({
+            'msg': err.response.statusText
+        })
     })
 });
 
-app.post('/odin/update/service', (req, res, next) => {
+// Get all services
+app.get('/odin/services', (req, res, next) => {
+    let apiUrl = globals.ODIN_SERVICE_URL + globals.GET_ALL_SERVICES_ENDPOINT;
+    let logObj = {
+        'path': globals.GET_ALL_SERVICES_ENDPOINT,
+        'method': 'GET',
+        'headers': req.headers,
+        'input': ''
+    }
+    axios.get(apiUrl, {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(rep => {
+        res.send({
+            'msg': rep.data
+        })
+    }).catch(err => {
+        logObj.note('Error encountered = ', e.message);
+        logger.info(logObj);
+        res.status(err.status);
+        res.send({
+            'msg': err.response.statusText
+        })
+    })
+});
+
+// Update a service
+app.put('/odin/service', (req, res, next) => {
     let apiUrl = globals.ODIN_SERVICE_URL + globals.UPDATE_SERVICE_ENDPOINT;
-    logger.info('Url called => ', apiUrl, ' with REQ => ', JSON.stringify(req.body));
-    axios.post(apiUrl, JSON.stringify(req.body),{
+    let logObj = {
+        'path': globals.UPDATE_SERVICE_ENDPOINT,
+        'method': 'PUT',
+        'headers': req.headers,
+        'input': req.body
+    }
+    axios.put(apiUrl, JSON.stringify(req.body), {
         headers: {
             'Content-Type': 'application/json'
         }
@@ -84,9 +133,8 @@ app.post('/odin/update/service', (req, res, next) => {
                 'msg': rep.data
             });
        }).catch(err => {
-            logger.info('Exception caught while calling => ',
-            globals.UPDATE_SERVICE_ENDPOINT, " with REQ => ",
-            JSON.stringify(req.body));
+            logObj.note('Error encountered = ', e.message);
+            logger.error(logObj);
             res.status(err.status);
             res.send({
                 'msg': err.response.statusText
@@ -94,38 +142,23 @@ app.post('/odin/update/service', (req, res, next) => {
        })
 });
 
-app.delete('/odin/remove/service/:deploymentId', (req, res, next) => {
-    let apiUrl = globals.ODIN_SERVICE_URL + globals.DELETE_SERVICE_ENDPOINT +
-        req.params.deploymentId;
-    logger.info('Url called => ' , apiUrl, ' with deploymentId => ',
-        req.params.deploymentId);
-    axios.delete(apiUrl)
-        .then(rep => {
-            res.send({
-                'msg': rep.data
-            });
-        }).catch(err => {
-            logger.info('Exception caught while calling => ',
-                globals.DELETE_SERVICE_ENDPOINT, " with deploymentId => ",
-                req.params.deploymentId);
-            res.status(err.response.status);
-            res.send({
-                'msg': err.response.statusText
-            })
-        })
-});
 
 app.get('/details/health', (req, res, next) => {
     let apiUrl = globals.ODIN_SERVICE_URL + globals.DETAILS_HEALTHCHECK_ENDPOINT;
-    logger.info('Url called =>', apiUrl);
+    let logObj = {
+        'path': '/details/health',
+        'method': 'GET',
+        'headers': req.headers,
+        'input': ''
+    }
     axios.get(apiUrl)
         .then(rep => {
             res.send({
                 'msg': rep.data
             });
         }).catch(err => {
-            logger.info('Exception caught while calling => ',
-                        globals.DETAILS_HEALTHCHECK_ENDPOINT);
+            logObj.note('Error encountered = ', e.message);
+            logger.error(logObj);
             res.status(err.response.status);
             res.send({
                 'msg': err.response.statusText
@@ -139,6 +172,8 @@ app.get('/health', (req, res, next) => {
     });
 });
 
+module.exports = app;
+/*
 app.get('/details/workspace/info/:workspaceId', (req, res, next) => {
     let apiUrl = globals.ODIN_SERVICE_URL + globals.WORKSPACE_INFORMATION_ENDPOINT
                  + req.params.workspaceId;
@@ -200,9 +235,6 @@ app.get('/details/services', (req, res, next) => {
         });
 });
 
-/*
-    PENDING CHANGES FROM THIS POINT
- */
 app.get('/details/deployments/:userId', (req, res, next) => {
     console.log('All user deployments called for userId => ' + req.params.userId);
     axios.get(odinBaseUrl + allUserDeployment + req.params.userId)
@@ -267,6 +299,5 @@ app.get('/polling/update/service/:deploymentId', (req, res, next) => {
             res.send(aboveResp.data)
         });
 });
-
-module.exports = app;
+*/
 

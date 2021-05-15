@@ -6,13 +6,11 @@ const logger = require("./../logger");
 async function authenticateTheUser(claims) {
     let userEmailPrefix = "user:email_address-"
     let emailFromClaimsData = userEmailPrefix.concat(claims['data']['emailAddress']);
-    console.log('emailFromClaimsData => %s', emailFromClaimsData);
     let aclTokenAgainstEmail;
 
     try {
         let t = await etcdClient.get(emailFromClaimsData);
         aclTokenAgainstEmail = t;
-        logger.info("AclTokenAgainstEmail in authenticateUser => %s", aclTokenAgainstEmail);
         
         if(typeof aclTokenAgainstEmail == 'undefined' || claims['data']['acl'] !== aclTokenAgainstEmail) {
             return {
@@ -21,7 +19,6 @@ async function authenticateTheUser(claims) {
             };
         }
     }catch(e) {
-        logger.info('ETCD error in authenticateUser => %s', e);
         return {
             'status': 500,
             'msg': 'Internal Server Error'
@@ -49,7 +46,6 @@ async function getUserInfo(aclToken) {
             }
         }
     }catch(e) {
-        logger.info("ETCD error in getUserInfo => %s", e);
         return {
             'status': 500,
             'msg': 'Internal Server Error'
@@ -88,7 +84,6 @@ function encodeClaimsIntoToken(claims) {
 
     try {
         encoded = jwt.sign(claims, secret, {algorithm: "HS256"});
-        logger.info('The encoded string returned => %s', encoded);
     }catch(e) {
         if(e instanceof jwt.JsonWebTokenError) {
             return {
@@ -97,8 +92,6 @@ function encodeClaimsIntoToken(claims) {
             };
         }
     }
-
-    logger.info("The claims data has been successfully encoded into the access token");
 
     return {
         'status': 200,
@@ -113,7 +106,6 @@ function decodeTokenForUserInfo(accessToken) {
 
     try {
         decoded = jwt.verify(accessToken, secret, {algorithm: "HS256"});
-        logger.info('The decoded in the userInfoFromToken => %s', decoded);
     }catch(e) {
         if(e instanceof jwt.JsonWebTokenError) {
             return {
