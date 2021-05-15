@@ -180,9 +180,8 @@ app.get('/details/workspaces/:userId', (req, res, next) => {
         })
 });
 
-app.get('/details/services/:workspaceId', (req, res, next) => {
-    let apiUrl = globals.ODIN_SERVICE_URL + globals.ALL_SERVICES_IN_WORKSPACE_ENDPOINT
-                + req.params.workspaceId;
+app.get('/details/services', (req, res, next) => {
+    let apiUrl = globals.ODIN_SERVICE_URL + globals.ALL_SERVICES_IN_WORKSPACE_ENDPOINT;
     logger.info('Url called => ', apiUrl, ' with workspaceId =>', req.params.workspaceId);
     axios.get(apiUrl)
          .then(rep => {
