@@ -85,37 +85,42 @@ app
         let acl = req.body['acl'];
         let aclSearchKey = 'user:email_address-'.concat(email);
         let aclTokenInDB;
+        let logObj = {
+            'path': '/login',
+            'method': 'POST',
+            'input': req.body
+        }
+
+        logObj.note = 'Beginning login process';
+        logger.info(logObj);
 
         try {
             aclTokenInDB = await etcdClient.get(aclSearchKey);
-            console.log('The aclTokenInDB -> ', aclTokenInDB);
             if(typeof aclTokenInDB == 'undefined') {
-                logger.info("No user found during login for aclSearchKey -> %s", aclSearchKey);
+                logObj.note = 'ACL token not found in DB';
+                logger.info(logObj);
                 res.status(403);
                 res.send({
                     'msg': 'Access denied'
                 })
             }
             if(acl != aclTokenInDB) {
-                logger.info("Wrong acl token passed with aclSearchKey -> %s", aclSearchKey);
+                logObj.note = 'ACL token in DB didn\'t match with the ACL passed';
+                logger.info(logObj);
                 res.status(403);
                 res.send({
                     'msg': 'Access denied'
                 })
             }
         }catch(e) {
-            logger.info('DB error during login => ', e);
+            logObj.note('Error encountered => %s', e.message);
+            logger.error(logObj);
             res.status(500);
             res.send({'msg':'Internal Server Error'});
         }
-        /* 
-            Otherwise, the acl-key passed is matched with 
-            the one stored in the DB, so, the user will be
-            given access. Now, try to fetch the claims
-            associated with the user so some data fields
-            like 'role' and 'isActive' which are used
-            frequently can be read with DB transactions.
-        */
+
+        logObj.note = 'Acl Token in DB matched with the one passed';
+        logger.info(logObj);
 
         let userInfoSearchKey = 'acl:acl_token-'.concat(aclTokenInDB);
         let userInfoForClaims;
@@ -123,17 +128,22 @@ app
         try {
             userInfoForClaims = await etcdClient.get(userInfoSearchKey);
             if(typeof userInfoForClaims == 'undefined') {
-                logger.info('user data not found for userInfoSearchKey -> %s', userInfoSearchKey);
+                logObj.note = 'User data not found for userInfoSearchKey = %s'
+                    .concat(userInfoSearchKey);
+                logger.info(logObj);
                 res.status(404);
                 res.send({'msg': 'User not found'});
             }
         }catch(e) {
-            logger.info("DB error encountered in login while fetching user data", e);
+            logObj.note = 'DB error encountered'
+            logger.error(logObj);
             res.status(500);
             res.send({'msg': 'Internal Server Error'});
         }
 
         userInfoForClaims = JSON.parse(userInfoForClaims);
+        logObj.note = 'Claims for the user = '.concat(JSON.stringify(userInfoForClaims));
+        logger.info(logObj);
 
         let claimsToBeEncoded = {
             'email': email,
@@ -145,6 +155,9 @@ app
 
         let sessToken = jwt.sign(claimsToBeEncoded, globals.JWT_SECRET,
             {algorithm: 'HS256'});
+
+        logObj.note = 'Login successful';
+        logger.info(logObj);
 
         res.setHeader('x-access-token', sessToken);
         res.status(200);
@@ -163,18 +176,28 @@ app
         let rights = userValidate['data']['role'];
         let active = userValidate['data']['isActive'];
         let isRequestMakerAdmin = acl.isUserAdmin(rights);
+        let logObj = {
+            'path': '/create',
+            'input': req.body
+        }
 
         if(typeof isRequestMakerAdmin === 'undefined') {
+            logObj.note('Admin rights unfulfilled');
+            logger.info(logObj);
             res.status(403);
             res.send({
                 'msg': 'Could not verify user\'s access token'
             })
         }else if(isRequestMakerAdmin === Boolean(0)) {
+            logObj.note('Admin right unfulfilled');
+            logger.info(logObj);
             res.status(403);
             res.send({
                 'msg': 'The user doesn\'t have access to users new user'
             })
         }else if(active === Boolean(0)) {
+            logObj.note('User is inactive.');
+            logger.info(logObj);
             res.status(403);
             res.send({
                'msg': 'The user is not active to make this request'
@@ -183,7 +206,12 @@ app
 
         let authResp = acl.authenticateTheUser(userValidate);
 
+        logObj.note('The value of authResp = %s', JSON.stringify(authResp));
+        logger.info(logObj);
+
         if(authResp['status'] !== 200) {
+            logObj.note('Failure response received from Auth');
+            logger.info(logObj);
             res.status(authResp['status']);
             res.send({
                 'msg': authResp['msg']
@@ -196,8 +224,11 @@ app
 
         try {
             let d = etcdClient.put(userKey, userAcl);
+            logObj.note('Key-Value of %s and %s inserted', userKey, userAcl);
+            logger.info(logObj);
         } catch (e) {
-            logger.info("PUT function failed in users endpoint => ", e);
+            logObj.note('DB error encountered = %s', e.message);
+            logger.info(logObj);
             res.status(500);
             res.send({
                 'msg': 'Interval Server Error'
@@ -218,9 +249,11 @@ app
 
         try {
             let x = etcdClient.put(aclTokenFullKey, JSON.stringify(userData));
-            logger.info('New user Information inserted successfully');
+            logObj.note('User claims written successfully');
+            logger.info(logObj);
         } catch (e) {
-            logger.info('DB error encountered in createUser while adding userInfo => %s', e);
+            logObj.note('DB error encountered = ', e.message);
+            logger.error(logObj);
             res.status(500);
             res.send({
                 'msg': 'Internal Server Error'

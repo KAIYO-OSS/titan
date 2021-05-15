@@ -13,6 +13,7 @@ app
         res.header("Access-Control-Allow-Headers", "Origin, Content-Type, Accept");
         res.header("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS");
 
+        /*
         logger.info({
             url: req.hostname,
             path: req.path,
@@ -21,6 +22,7 @@ app
             body: req.body,
             headers: req.headers,
         });
+        */
 
         let accessToken = req.headers['x-access-token'];
         let claims = acl.decodeTokenForUserInfo(accessToken);
@@ -38,18 +40,18 @@ app
 
         let authResp = await acl.authenticateTheUser(claims);
 
-        logger.info('The authResp inside API Index => %d', authResp);
-
         if(authResp['status'] === 500) {
             res.status(500);
             res.send({
                 'msg': 'Something went wrong. Contact Tech Support.'
             })
-        }else if(authResp['status'] === 401) {
-            res.status(401);
+            return;
+        }else if(authResp['status'] === 403) {
+            res.status(403);
             res.send({
                 'msg': 'Incorrect user credentials.'
             })
+            return;
         }        
         next();
     })
