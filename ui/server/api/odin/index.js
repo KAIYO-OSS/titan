@@ -1,7 +1,7 @@
 const express = require("express");
 const axios = require("axios");
 const app = express.Router();
-const odinBaseUrl = 'http://4a3d5f5bd31b.ngrok.io'
+const odinBaseUrl = 'http://5cf6f1c0ebf6.ngrok.io'
 const logger = require('./../../logger');
 const globals = require('./../../constants')
 
@@ -20,9 +20,9 @@ app.post('/odin/deploy/workspace/', (req, res, next) => {
             logger.info('Exception caught while calling => ',
                         globals.DEPLOY_WORKSPACE_ENDPOINT,
                         ' with req => ', JSON.stringify(req.body));
-            res.status(err.response.status)
+            // res.status(err.response.status)
             res.send({
-                'msg': err.response.statusText
+                'msg': err.response
             })
     })
 });
@@ -53,8 +53,7 @@ app.post('/odin/service/deploy', (req, res, next) => {
     let apiUrl = globals.ODIN_SERVICE_URL + globals.DEPLOY_SERVICE_ENPOINT;
     logger.info('Odin Deploy Service API called =>', apiUrl, "with req => ",
         JSON.stringify(req.body));
-    axios.post(apiUrl, {
-        body: JSON.stringify(req.body),
+    axios.post(apiUrl,  JSON.stringify(req.body),{
         headers: {
             'Content-Type': 'application/json'
         }
@@ -76,8 +75,7 @@ app.post('/odin/service/deploy', (req, res, next) => {
 app.post('/odin/update/service', (req, res, next) => {
     let apiUrl = globals.ODIN_SERVICE_URL + globals.UPDATE_SERVICE_ENDPOINT;
     logger.info('Url called => ', apiUrl, ' with REQ => ', JSON.stringify(req.body));
-    axios.post(apiUrl, {
-        body: JSON.stringify(req.body),
+    axios.post(apiUrl, JSON.stringify(req.body),{
         headers: {
             'Content-Type': 'application/json'
         }
