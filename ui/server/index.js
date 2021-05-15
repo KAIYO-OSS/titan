@@ -7,9 +7,9 @@ const path = require("path");
 const logger = require("./logger");
 const api = require("./api");
 const jwt = require("jsonwebtoken");
-const jwtSecret = "VmYq3t6v9y$B&E)H@McQfTjWnZr4u7x!";
+const jwtSecret = "123";
 const users = require("./users");
-
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbEFkZHJlc3MiOiJhbnVyYWcuc2Fya2FyQGdtYWlsLmNvbSIsImFjbFRva2VuIjoiYWJjMTIzIiwiaWF0IjoxNjIxMDkwNDQ5fQ.m-WwnzOhzEzI-dldiavm3Mn6_XXAe4oAbZtA_MheCVg
 const app = express();
 
 logger.info(path.join(__dirname, "..", "build"));
