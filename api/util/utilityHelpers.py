@@ -20,7 +20,7 @@ class Utils:
         originalCommand = listCmds
         logger.info("runnning command: " + str(originalCommand))
         listCmds = listCmds.split(" ")
-        listCmds.insert(0, cliType)
+        # listCmds.insert(0, cliType)
         process = subprocess.Popen(listCmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = process.communicate()
         if process.returncode != 0:

@@ -28,6 +28,3 @@ module.exports = Object.freeze({
     POLLING_UPDATE_SERVICE_ENDPOINT: process.env.POLLING_UPDATE_SERVICE_ENDPOINT || '/polling/update/service/',
     POLLING_DELETE_SERVICE_ENDPOINT: process.env.POLLING_DELETE_SERVICE_ENDPOINT || '/polling/delete/service'
 });
-
-
-
