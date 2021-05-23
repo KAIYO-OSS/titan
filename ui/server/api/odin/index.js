@@ -1,7 +1,6 @@
 const express = require("express");
 const axios = require("axios");
 const app = express.Router();
-const odinBaseUrl = 'http://5cf6f1c0ebf6.ngrok.io'
 const logger = require('./../../logger');
 const globals = require('./../../constants')
 
@@ -14,20 +13,33 @@ app.post('/odin/service', (req, res, next) => {
         'headers': req.headers,
         'input': req.body
     }
-    axios.post(apiUrl,
-        JSON.stringify(req.body),
-        {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then(rep => {
-            res.send(rep.data)
-        }).catch(err => {
-            logObj.note('Exception encounted = ', err.response);
-            logger.error(logObj);
-            res.send({
-                'msg': err.response
-            })
+
+    let payload = req.body;
+
+    // Check if payload is there, if not -> kickout the request
+    if(Object.entries(payload).length === 0) {
+        res.status(400);
+        res.send({
+            'msg': 'Bad Request. No payload found.'
+        })
+    }
+
+    axios({
+        method: 'post',
+        url: apiUrl,
+        data: payload,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(rep => {
+        res.status(rep.status);
+        res.send(rep.data);
+    }).catch(err => {
+        logObj.note('Exception encountered = ', err.response);
+        logger.error(logObj);
+        res.send({
+            'msg': err.response
+        })
     })
 });
 
@@ -35,46 +47,56 @@ app.post('/odin/service', (req, res, next) => {
 app.delete('/odin/service/:serviceId', (req, res, next) => {
     let apiUrl = globals.ODIN_SERVICE_URL + globals.DELETE_SERVICE_ENDPOINT
                  + req.params.serviceId;
+
     let logObj = {
         'path': globals.DELETE_SERVICE_ENDPOINT + req.params.serviceId,
         'method': 'DELETE',
         'headers': req.headers,
         'input': req.params.serviceId
     }
-    axios.delete(apiUrl,{
+
+    axios({
+        method: 'delete',
+        url: apiUrl,
         headers: {
             'Content-Type': 'application/json'
         }
     }).then(rep => {
-            res.send({
-                'msg': rep.data
-            })
-        }).catch(err => {
-            logObj.note('Exception encountered = ', e.message);
-            logger.info(logObj);
-            res.status(err.response.status);
-            res.send({
-                'msg': err.response.statusText
-            })
+        res.status(rep.status);
+        res.send({
+            'msg': rep.data
+        })
+    }).catch(err => {
+        logObj.note('Exception encountered = ', e.message);
+        logger.info(logObj);
+        res.status(err.response.status);
+        res.send({
+            'msg': err.response.statusText
+        })
     });
 
 });
 
-// Get a service
+// Get a service with a serviceId
 app.get('/odin/service/:serviceId', (req, res, next) => {
     let apiUrl = globals.ODIN_SERVICE_URL + globals.GET_SERVICE_ENDPOINT
                  + req.params.serviceId;
+
     let logObj = {
         'path': globals.GET_SERVICE_ENDPOINT + req.params.serviceId,
         'method': 'GET',
         'headers': req.headers,
         'input': req.params.serviceId
     }
-    axios.put(apiUrl,{
+
+    axios({
+        method: 'get',
+        url: apiUrl,
         headers: {
             'Content-Type': 'application/json'
         }
     }).then(rep => {
+        res.status(rep.status);
         res.send({
             'msg': rep.data
         })
@@ -88,25 +110,30 @@ app.get('/odin/service/:serviceId', (req, res, next) => {
     })
 });
 
-// Get all services
-app.get('/odin/services', (req, res, next) => {
+// Get all existing services
+app.get('/odin/services/', (req, res, next) => {
     let apiUrl = globals.ODIN_SERVICE_URL + globals.GET_ALL_SERVICES_ENDPOINT;
+
     let logObj = {
         'path': globals.GET_ALL_SERVICES_ENDPOINT,
         'method': 'GET',
         'headers': req.headers,
         'input': ''
     }
-    axios.get(apiUrl, {
+
+    axios({
+        method: 'get',
+        url: apiUrl,
         headers: {
             'Content-Type': 'application/json'
         }
     }).then(rep => {
+        res.status(rep.status);
         res.send({
             'msg': rep.data
         })
     }).catch(err => {
-        logObj.note('Error encountered = ', e.message);
+        logObj.note('Error encountered = ', err.message);
         logger.info(logObj);
         res.status(err.status);
         res.send({
@@ -115,7 +142,7 @@ app.get('/odin/services', (req, res, next) => {
     })
 });
 
-// Update a service
+// Update a service with parameters
 app.put('/odin/service', (req, res, next) => {
     let apiUrl = globals.ODIN_SERVICE_URL + globals.UPDATE_SERVICE_ENDPOINT;
     let logObj = {
@@ -124,22 +151,36 @@ app.put('/odin/service', (req, res, next) => {
         'headers': req.headers,
         'input': req.body
     }
-    axios.put(apiUrl, JSON.stringify(req.body), {
+
+    let payload = req.body;
+
+    if(Object.entries(payload).length === 0) {
+        res.status(400);
+        res.send({
+            'msg': 'Bad request. No payload found.'
+        })
+    }
+
+    axios({
+        method: 'put',
+        url: apiUrl,
+        data: payload,
         headers: {
             'Content-Type': 'application/json'
         }
     }).then(rep => {
-            res.send({
-                'msg': rep.data
-            });
-       }).catch(err => {
-            logObj.note('Error encountered = ', e.message);
-            logger.error(logObj);
-            res.status(err.status);
-            res.send({
-                'msg': err.response.statusText
-            })
-       })
+        res.status(rep.status);
+        res.send({
+            'msg': rep.data
+        });
+    }).catch(err => {
+        logObj.note('Error encountered = ', e.message);
+        logger.error(logObj);
+        res.status(err.status);
+        res.send({
+            'msg': err.response.statusText
+        })
+    })
 });
 
 
@@ -151,22 +192,29 @@ app.get('/details/health', (req, res, next) => {
         'headers': req.headers,
         'input': ''
     }
-    axios.get(apiUrl)
-        .then(rep => {
-            res.send({
-                'msg': rep.data
-            });
-        }).catch(err => {
-            logObj.note('Error encountered = ', e.message);
-            logger.error(logObj);
-            res.status(err.response.status);
-            res.send({
-                'msg': err.response.statusText
-            });
+    axios({
+        method: 'get',
+        url: apiUrl,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(rep => {
+        res.status(rep.status);
+        res.send({
+            'msg': rep.data
+        });
+    }).catch(err => {
+        logObj.note('Error encountered = ', err.message);
+        logger.error(logObj);
+        res.status(err.response.status);
+        res.send({
+            'msg': err.response.statusText
+        });
     })
 })
 
 app.get('/health', (req, res, next) => {
+    res.status(200);
     res.send({
         'msg': 'Titan is up !'
     });
