@@ -5,7 +5,8 @@ const logger = require("./../logger");
 
 async function authenticateTheUser(claims) {
     let userEmailPrefix = "user:email_address-"
-    let emailFromClaimsData = userEmailPrefix.concat(claims['data']['emailAddress']);
+    let emailFromClaimsData = userEmailPrefix.concat(claims['data']['email']);
+    
     let aclTokenAgainstEmail;
 
     try {
