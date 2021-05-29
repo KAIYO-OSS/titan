@@ -16,7 +16,6 @@ app.post('/odin/service', (req, res, next) => {
 
     let payload = req.body;
 
-    // Check if payload is there, if not -> kickout the request
     if(Object.entries(payload).length === 0) {
         res.status(400);
         res.send({
@@ -35,10 +34,17 @@ app.post('/odin/service', (req, res, next) => {
         res.status(rep.status);
         res.send(rep.data);
     }).catch(err => {
-        logObj.note('Exception encountered = ', err.response);
+        logObj.note = 'Exception encountered = '.concat(err.response);
         logger.error(logObj);
+        /*
+        res.status(err.status);
         res.send({
-            'msg': err.response
+            'msg': err.response.statusText
+        })
+         */
+        res.status(500);
+        res.send({
+            'msg': 'Something went wrong'
         })
     })
 });
@@ -67,11 +73,17 @@ app.delete('/odin/service/:serviceId', (req, res, next) => {
             'msg': rep.data
         })
     }).catch(err => {
-        logObj.note('Exception encountered = ', e.message);
+        logObj.note = 'Exception encountered = '.concat(err.message);
         logger.info(logObj);
-        res.status(err.response.status);
+        /*
+        res.status(err.status);
         res.send({
             'msg': err.response.statusText
+        })
+         */
+        res.status(500);
+        res.send({
+            'msg': 'Something went wrong'
         })
     });
 
@@ -101,11 +113,17 @@ app.get('/odin/service/:serviceId', (req, res, next) => {
             'msg': rep.data
         })
     }).catch(err => {
-        logObj.note('Error encountered = ', err.response);
+        logObj.note = 'Error encountered = '.concat(err.response);
         logger.error(logObj);
+        /*
         res.status(err.status);
         res.send({
             'msg': err.response.statusText
+        })
+         */
+        res.status(500);
+        res.send({
+            'msg': 'Something went wrong'
         })
     })
 });
@@ -133,11 +151,17 @@ app.get('/odin/services/', (req, res, next) => {
             'msg': rep.data
         })
     }).catch(err => {
-        logObj.note('Error encountered = ', err.message);
+        logObj.note = 'Error encountered = '.concat(err.message);
         logger.info(logObj);
+        /*
         res.status(err.status);
         res.send({
             'msg': err.response.statusText
+        })
+         */
+        res.status(500);
+        res.send({
+            'msg': 'Something went wrong'
         })
     })
 });
@@ -145,6 +169,7 @@ app.get('/odin/services/', (req, res, next) => {
 // Update a service with parameters
 app.put('/odin/service', (req, res, next) => {
     let apiUrl = globals.ODIN_SERVICE_URL + globals.UPDATE_SERVICE_ENDPOINT;
+
     let logObj = {
         'path': globals.UPDATE_SERVICE_ENDPOINT,
         'method': 'PUT',
@@ -174,14 +199,107 @@ app.put('/odin/service', (req, res, next) => {
             'msg': rep.data
         });
     }).catch(err => {
-        logObj.note('Error encountered = ', e.message);
+        logObj.note = 'Error encountered = '.concat(err.message);
         logger.error(logObj);
+        /*
         res.status(err.status);
         res.send({
             'msg': err.response.statusText
         })
+         */
+        res.status(500);
+        res.send({
+            'msg': 'Something went wrong'
+        })
     })
 });
+
+// Service rollback API
+app.post('/odin/service/rollback', (req, res, next) => {
+    let apiUrl = globals.ODIN_SERVICE_URL + globals.ROLLBACK_SERVICE_ENDPOINT;
+
+    let logObj = {
+        'path': globals.ROLLBACK_SERVICE_ENDPOINT,
+        'method': 'POST',
+        'headers': req.headers,
+        'input': req.body
+    }
+
+    if(Object.entries(req.body).length === 0) {
+        logObj.note = 'Bad input. No payload found.';
+        logger.error(logObj);
+        res.status(400);
+        res.send({
+            'msg': 'Bad request. No payload found.'
+        })
+    }
+
+    axios({
+        method: 'post',
+        url: apiUrl,
+        data: req.body,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(rep => {
+        res.status(rep.status);
+        res.send({
+            'msg': rep.data
+        })
+    }).catch(err => {
+        logObj.note = 'Error encountered = '.concat(err.message);
+        logger.error(logObj);
+        /*
+        res.status(err.status);
+        res.send({
+            'msg': err.response.statusText
+        })
+         */
+        res.status(500);
+        res.send({
+            'msg': 'Something went wrong'
+        })
+    });
+})
+
+// Get service status
+app.get('/odin/service/:serviceName/status', (req, res, next) => {
+    let apiUrl = globals.ODIN_SERVICE_URL + '/odin/service/' + req.params.serviceName + '/status';
+
+    let logObj = {
+        'path': apiUrl,
+        'method': 'GET',
+        'headers': req.headers,
+        'input': req.body
+    }
+
+    axios({
+        method: 'get',
+        url: apiUrl,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(rep => {
+        res.status(rep.status);
+        res.send({
+            'msg': rep.data
+        });
+    }).catch(err => {
+        logObj.note = 'Error encountered = '.concat(err.message);
+        logger.error(logObj);
+        /*
+        res.status(err.status);
+        res.send({
+            'msg': err.response.statusText
+        })
+         */
+        res.status(500);
+        res.send({
+            'msg': 'Something went wrong'
+        })
+    })
+});
+
 
 
 app.get('/details/health', (req, res, next) => {
@@ -204,12 +322,18 @@ app.get('/details/health', (req, res, next) => {
             'msg': rep.data
         });
     }).catch(err => {
-        logObj.note('Error encountered = ', err.message);
+        logObj.note = 'Error encountered = '.concat(err.message);
         logger.error(logObj);
-        res.status(err.response.status);
+        /*
+        res.status(err.status);
         res.send({
             'msg': err.response.statusText
-        });
+        })
+         */
+        res.status(500);
+        res.send({
+            'msg': 'Something went wrong'
+        })
     })
 })
 

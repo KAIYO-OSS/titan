@@ -14,7 +14,7 @@ app
     .use('/search', async function(req, res, next) {
         let secret = globals.APP_COMMON_SECRET;
         let k = req.body['k'];
-        if((typeof req.headers['secret'] == 'undefined') || req.headers['secret'] != secret) {
+        if(!req.headers['secret'] || (req.headers['secret'] != secret)) {
             logger.info('Wrong secret key has been passed');
             res.status(403);
             res.send({
@@ -49,7 +49,7 @@ app
             authenticated request.
          */
         let secret = globals.APP_COMMON_SECRET; // This password should be passed int he headers
-        if((typeof req.headers['secret'] == 'undefined') || req.headers['secret'] != secret) {
+        if(!req.headers['secret'] || (req.headers['secret'] != secret)) {
             logger.info('Wrong secret key has been passed');
             res.status(403);
             res.send({
@@ -90,14 +90,22 @@ app
             'method': 'POST',
             'input': req.body
         }
+        if(!req.body || !email || !acl) {
+            //logObj.note = 'Null payload/keys passed';
+            //logObj.info(logObj);
+            res.status(401);
+            res.send({
+                'msg': 'Access denied'
+            })
+        }
         logObj.note = 'Beginning login process';
         logger.info(logObj);
         try {
             aclTokenInDB = await etcdClient.get(aclSearchKey);
-            if(typeof aclTokenInDB === undefined) {
+            if(!aclTokenInDB) {
                 logObj.note = 'ACL token not found in DB';
                 logger.info(logObj);
-                res.status(403);
+                res.status(401);
                 res.send({
                     'msg': 'Access denied'
                 })
@@ -105,7 +113,7 @@ app
             if(acl != aclTokenInDB) {
                 logObj.note = 'ACL token in DB didn\'t match with the ACL passed';
                 logger.info(logObj);
-                res.status(403);
+                res.status(401);
                 res.send({
                     'msg': 'Access denied'
                 })
@@ -125,12 +133,14 @@ app
 
         try {
             userInfoForClaims = await etcdClient.get(userInfoSearchKey);
-            if(typeof userInfoForClaims === undefined || userInfoForClaims == null) {
+            if(!userInfoForClaims) {
                 logObj.note = 'User data not found for userInfoSearchKey = '
                     .concat(userInfoSearchKey);
                 logger.info(logObj);
                 res.status(200);
-                res.send({'msg': 'User not found'});
+                res.send({
+                    'msg': 'User not found'
+                });
             }
         }catch(e) {
             logObj.note = 'DB error encountered'
@@ -179,7 +189,7 @@ app
             'input': req.body
         }
 
-        if(typeof isRequestMakerAdmin === 'undefined') {
+        if(!isRequestMakerAdmin) {
             logObj.note('Admin rights unfulfilled');
             logger.info(logObj);
             res.status(403);
@@ -277,7 +287,7 @@ app
 
         let isRequestMakerAdmin = acl.isUserAdmin(aclOfReqMaker);
 
-        if(typeof isRequestMakerAdmin === 'undefined') {
+        if(!isRequestMakerAdmin) {
             res.status(403);
             res.send({
                 'msg': 'Could not verify user\'s access token'
@@ -323,7 +333,7 @@ app
 
         try {
             userInfo = etcdClient.get(userDataSearchKey);
-            if(typeof userInfo == 'undefined') {
+            if(!userInfo) {
                 logger.info('userInfo not found for deactivateUser against the key -> %s', userDataSearchKey);
                 res.status(404);
                 res.send({
