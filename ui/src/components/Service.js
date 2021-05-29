@@ -45,10 +45,9 @@ export default function Service() {
                             <Card.Body>
                                 <Card.Title>{item.title}</Card.Title>
                                 <Card.Text>
-                                    Some quick example text to build on the card title and make up the bulk of
-                                    the card's content.
+                                    Service content !
                                 </Card.Text>
-                                <Button variant="primary">Update</Button>
+                                <Button>Update</Button>
                             </Card.Body>
                         </Card>
                     </List.Item>
