@@ -1,7 +1,6 @@
 import React from "react";
 import {Button, Input, List} from "antd";
 import {Card} from "react-bootstrap";
-import Search from "./Search";
 
 
 export default function Service() {
@@ -47,13 +46,12 @@ export default function Service() {
                                 <Card.Text>
                                     Service content !
                                 </Card.Text>
-                                <Button>Update</Button>
+                                <Button>View</Button>
                             </Card.Body>
                         </Card>
                     </List.Item>
                 )}
             />
-
         </div>
     )
 }

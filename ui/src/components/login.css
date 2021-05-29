@@ -3,17 +3,17 @@
 @import url(https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css);
 
 body {
-    background: rgb(47, 89, 100);
+    background: rgb(164, 176, 179);
     background: -moz-linear-gradient(
             left,
-            rgba(47, 89, 100,1) 0%,
-            rgba(47, 89, 200,1) 100%
+            rgba(164, 176, 179,1) 0%,
+            rgba(164, 176, 179,1) 100%
     );
     background: -webkit-gradient(
             left top,
             right top,
-            color-stop(0%, rgba(47, 89, 100,1)),
-            color-stop(100%, rgba(47, 89, 200,1))
+            color-stop(0%, rgba(164, 176, 179,1)),
+            color-stop(100%, rgb(62, 73, 102))
     );
     background: -webkit-linear-gradient(
             left,

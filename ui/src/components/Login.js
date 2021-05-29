@@ -16,18 +16,17 @@ const loginInputsInit = [
     }
 ];
 
-const Login = ({
-                   inputs,
-                   signUp,
-                   submitForm,
-               }) => (
-    <div className={signUp ? "login login-closed" : "login"}>
-        <h1>Log In</h1>
-        <hr/>
-        <Form
-            inputs={inputs}
-            submitForm={submitForm}
-        />
+const Login = ({inputs, signUp, submitForm,}) => (
+    <div>
+        <div style={{textAlign : 'center', fontSize : '2rem', marginTop : '3%'}}>Deployment Center</div>
+        <div className={signUp ? "login login-closed" : "login"}>
+            <h1>Log In</h1>
+            <hr/>
+            <Form
+                inputs={inputs}
+                submitForm={submitForm}
+            />
+        </div>
     </div>
 );
 
