@@ -1,7 +1,18 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Nav, Navbar, NavDropdown} from "react-bootstrap";
+import {useHistory} from "react-router";
 
 export default function NavbarComponent() {
+
+    const history = useHistory();
+
+    useEffect(() => {
+
+    }, [])
+
+    const logout = () => {
+        history.push("/login")
+    }
     return (
         <div>
             <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
@@ -16,7 +27,7 @@ export default function NavbarComponent() {
                         </NavDropdown>
                     </Nav>
                     <Nav>
-                         <Nav.Link onClick={() => console.log("click")}>Logout</Nav.Link>
+                        <Nav.Link onClick={logout}>Logout</Nav.Link>
                     </Nav>
                 </Navbar.Collapse>
             </Navbar>

@@ -1,6 +1,7 @@
 import React from 'react';
 import NavbarComponent from "./Navbar";
 import View from "./View";
+import {withRouter} from "react-router";
 
 export function Landing() {
 
@@ -12,4 +13,4 @@ export function Landing() {
     );
 }
 
-export default Landing;
+export default withRouter(Landing);

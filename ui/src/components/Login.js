@@ -1,6 +1,7 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import './login.css'
 import {useHistory} from "react-router";
+import {doLogin} from "../apis/titan";
 
 const loginInputsInit = [
     {
@@ -18,7 +19,7 @@ const loginInputsInit = [
 
 const Login = ({inputs, signUp, submitForm,}) => (
     <div>
-        <div style={{textAlign : 'center', fontSize : '2rem', marginTop : '3%'}}>Deployment Center</div>
+        <div style={{textAlign: 'center', fontSize: '2rem', marginTop: '3%'}}>Deployment Center</div>
         <div className={signUp ? "login login-closed" : "login"}>
             <h1>Log In</h1>
             <hr/>
@@ -33,36 +34,27 @@ const Login = ({inputs, signUp, submitForm,}) => (
 const Submit = () => (
     <div>
         <hr/>
-        <button
-            className="submit-button"
-            type="submit"
-        > Submit
+        <button className="submit-button" type="submit">
+            Submit
         </button>
     </div>
 );
 
 
-const Input = ({
-                   label,
-                   type,
-                   show,
-                   id,
-               }) => (
+const Input = ({label, type, show, id,}) => (
     <div className={show ? "field field-in" : "field"}>
         <label className="label">{label}
         </label>
         <br/>
         <input
+            key={id}
             className="input"
             type={type}
         />
     </div>
 );
 
-const Form = ({
-                  inputs,
-                  submitForm
-              }) => {
+const Form = ({inputs, submitForm}) => {
     const inputsMapped = inputs.map((i) => (
         <Input
             label={i.label}
@@ -87,39 +79,15 @@ export default function LoginComponent() {
     const [signUp, setSignUp] = useState(false)
     const [loginInputs, setLoginInputs] = useState(loginInputsInit)
 
-    const inUpClick = () => {
-        setSignUp(!signUp)
-        animateFields("signupInputs");
-        setTimeout(() => {
-            animateFields("loginInputs");
-        }, 100);
-    }
+    useEffect(() => {
 
-    const animateFields = (formName) => {
-        let start, length, newForm;
+    }, [])
 
-        newForm = loginInputs.slice();
-
-        start = 0;
-        length = newForm.length;
-
-        console.log(newForm);
-
-        let stagger = (i) => {
-            if (i < length) {
-                setTimeout(() => {
-                    newForm[i].show = !newForm[i].show
-                    this.setState({[formName]: newForm});
-                    stagger(i + 1);
-                }, 70);
-            }
-        };
-        stagger(start);
-    }
-
-    const submitForm = (e) => {
+    const submitForm = async (e) => {
         e.preventDefault();
-        history.push("/")
+        let isValid = await doLogin(e.target.elements[0].value, e.target.elements[1].value);
+        if (isValid)
+            history.push("/")
     }
 
     return (
@@ -127,7 +95,6 @@ export default function LoginComponent() {
             <Login
                 signUp={signUp}
                 inputs={loginInputs}
-                inUpClick={inUpClick}
                 submitForm={submitForm}
             />
         </div>
