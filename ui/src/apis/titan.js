@@ -27,3 +27,15 @@ export const doLogin = (username, token) => {
     });
 }
 
+export const isAuthValid = () => {
+
+}
+
+export const listAllServices = () => {
+
+}
+
+export const getServiceDetails = (serviceName) => {
+
+}
+

@@ -5,6 +5,7 @@ import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import LoginComponent from "./components/Login";
 import Landing from "./components/landing";
+import ServiceDetail from "./components/ServiceDetail";
 
 
 function App() {
@@ -15,6 +16,9 @@ function App() {
                 <Switch>
                     <Route exact path={"/"}>
                         <Landing/>
+                    </Route>
+                    <Route exact path={"/service/:id"}>
+                        <ServiceDetail/>
                     </Route>
                     <Route exact path={"/login"}>
                         <LoginComponent/>
