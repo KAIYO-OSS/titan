@@ -3,6 +3,7 @@ import json
 from fastapi import APIRouter
 from util.helm import Helm
 from models.deployRequest import DeployRequest
+from models.rollbackRequest import RollbackRequest
 from util.utilityHelpers import Utils
 
 router = APIRouter()
@@ -13,7 +14,7 @@ async def deploy_service(deploy_request: DeployRequest):
     try:
         Helm.odinHelmSetup()
         output = Utils.getJson(Helm.deployService(deploy_request.service_name,
-                                                   deploy_request.chart_name, deploy_request.values))
+                                                  deploy_request.chart_name, deploy_request.values))
         return {
             "status": "200",
             "metadata": output,
@@ -43,7 +44,7 @@ async def delete_service(service_name):
         }
 
 
-@router.get("/odin/service/{service_name}", tags=["odin"])
+@router.get("/odin/service/{service_name/status}", tags=["odin"])
 async def get_status(service_name):
     try:
         status = Utils.getJson(Helm.getServiceStatus(service_name))
@@ -57,6 +58,41 @@ async def get_status(service_name):
             "status": "500",
             "metadata": {},
             "error": "Failed to fetch Service Status: " + str(ex)
+        }
+
+
+@router.get("/odin/service/{service_name}/revisions", tags=["odin"])
+async def get_revisions(service_name):
+    try:
+        revisions = Utils.getJson(Helm.getServiceRevisions(service_name))
+        return {
+            "status": "200",
+            "revisions": revisions,
+            "error": ""
+        }
+    except Exception as ex:
+        return {
+            "status": "500",
+            "metadata": {},
+            "error": "Failed to fetch Service Revisions: " + str(ex)
+        }
+
+
+@router.post("/odin/service/rollback", tags=["odin"])
+async def rollback_service(rollback_request: RollbackRequest):
+    try:
+        Helm.odinHelmSetup()
+        Helm.rollbackService(
+            rollback_request.service_name, rollback_request.revision)
+        return {
+            "status": "200",
+            "metadata": "Rolled back successfully",
+            "error": ""
+        }
+    except Exception as ex:
+        return {
+            "status": "500",
+            "error": "Service deployment failed: " + str(ex)
         }
 
 

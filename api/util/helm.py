@@ -23,8 +23,8 @@ class Helm():
 
     @staticmethod
     def deployService(service_name, chart_name, values):
-        helmDeployService = "helm install {service_name} {chart_name}".format(service_name=service_name,
-                                                                             chart_name=chart_name)
+        helmDeployService = "helm install {service_name} {chart_name} -o json".format(service_name=service_name,
+                                                                                      chart_name=chart_name)
         for v in values:
             helmDeployService += " --set "
             helmDeployService += v + "=" + values[v]
@@ -38,7 +38,7 @@ class Helm():
     @staticmethod
     def updateService(service_name, chart_name, values):
         helmUpgradeService = "helm upgrade {service_name} {chart_name} ".format(service_name=service_name,
-                                                                              chart_name=chart_name)
+                                                                                chart_name=chart_name)
         for v in values:
             helmUpgradeService += " --set "
             helmUpgradeService += v + "=" + values[v]
@@ -64,9 +64,14 @@ class Helm():
     def getServiceValues(service_name):
         get_values_command = "helm get values {service_name} -o json".format(service_name=service_name)
         return Utils.executeCommand(get_values_command)
-"""
-TODO
 
-helm rollback
+    @staticmethod
+    def getServiceRevisions(service_name):
+        get_revisions_command = "helm history {service_name} -o json".format(service_name=service_name)
+        return Utils.executeCommand(get_revisions_command)
 
-"""
+    @staticmethod
+    def rollbackService(service_name, revision):
+        rollback_command = "helm rollback {service_name} {revision}".format(service_name=service_name,
+                                                                                           revision=revision)
+        return Utils.executeCommand(rollback_command)
