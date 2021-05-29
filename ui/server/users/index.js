@@ -7,7 +7,7 @@ const cors = require("cors");
 const path = require("path");
 const bodyParser = require("body-parser");
 const acl = require("./../acl");
-const app = express();  
+const app = express();
 
 app
     .use(express.json())
@@ -90,13 +90,11 @@ app
             'method': 'POST',
             'input': req.body
         }
-
         logObj.note = 'Beginning login process';
         logger.info(logObj);
-
         try {
             aclTokenInDB = await etcdClient.get(aclSearchKey);
-            if(typeof aclTokenInDB == 'undefined') {
+            if(typeof aclTokenInDB === undefined) {
                 logObj.note = 'ACL token not found in DB';
                 logger.info(logObj);
                 res.status(403);
@@ -127,11 +125,11 @@ app
 
         try {
             userInfoForClaims = await etcdClient.get(userInfoSearchKey);
-            if(typeof userInfoForClaims == 'undefined') {
-                logObj.note = 'User data not found for userInfoSearchKey = %s'
+            if(typeof userInfoForClaims === undefined || userInfoForClaims == null) {
+                logObj.note = 'User data not found for userInfoSearchKey = '
                     .concat(userInfoSearchKey);
                 logger.info(logObj);
-                res.status(404);
+                res.status(200);
                 res.send({'msg': 'User not found'});
             }
         }catch(e) {
@@ -140,7 +138,7 @@ app
             res.status(500);
             res.send({'msg': 'Internal Server Error'});
         }
-
+        console.log(userInfoForClaims)
         userInfoForClaims = JSON.parse(userInfoForClaims);
         logObj.note = 'Claims for the user = '.concat(JSON.stringify(userInfoForClaims));
         logger.info(logObj);
@@ -164,7 +162,7 @@ app
         res.send({
             'msg': 'Successfully logged in !'
         });
-        
+
     })
     .use('/create', async function(req, res, next) {
         res.header("Access-Control-Allow-Origin", "*");
@@ -318,13 +316,13 @@ app
                 'msg': 'Internal Server Error'
             })
         }
-        
+
         let userDataByEmailPrefix = 'acl:acl_token-';
         let userDataSearchKey = userDataByEmailPrefix.concat(aclOfUserToBeDeactivated);
         let userInfo;
 
         try {
-            userInfo = etcdClient.get(userDataSearchKey);    
+            userInfo = etcdClient.get(userDataSearchKey);
             if(typeof userInfo == 'undefined') {
                 logger.info('userInfo not found for deactivateUser against the key -> %s', userDataSearchKey);
                 res.status(404);
@@ -341,7 +339,7 @@ app
         }
 
         userInfo['isActive'] = false;
-        
+
         /*
             Now, use the put to reinsert the formatted userInfo back into the db
         */

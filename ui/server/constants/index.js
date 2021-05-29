@@ -6,7 +6,7 @@ module.exports = Object.freeze({
     TEST_JWT : process.env.TEST_JWT || 'yJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbEFkZHJlc3MiOiJhbnVyYWcuc2Fya2FyMjUwQGdtYWlsLmNvbSIsImFjbFRva2VuIjoiYWJjMTIzIn0.8AXDnR87Pk2S4__uoAVpb7GTh2E6LhuglsKSsOeHRBo',
     APP_COMMON_SECRET: process.env.APP_COMMON_SECRET || 'kaiyo@123',
     SAMPLE_ACL_TOKEN : process.env.SAMPLE_ACL_TOKEN || 'ar3i89wensdkwe23s',
-    ODIN_SERVICE_URL: process.env.ODIN_SERVICE_URL || 'http://localhost:5000',
+    ODIN_SERVICE_URL: process.env.ODIN_SERVICE_URL || 'http://1dd87978f675.ngrok.io',
     DEPLOY_WORKSPACE_ENDPOINT: process.env.DEPLOY_WORKSPACE_ENDPOINT || '/odin/deploy/workspace',
     DELETE_WORKSPACE_ENDPOINT: process.env.DELETE_WORKSPACE_ENDPOINT || '/odin/remove/workspace/',
     DEPLOY_SERVICE_ENPOINT: process.env.DEPLOY_SERVICE_ENDPOINT || '/odin/service',
