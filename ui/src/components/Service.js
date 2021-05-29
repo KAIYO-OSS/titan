@@ -1,5 +1,6 @@
-import React, {useState} from "react";
-import {AutoComplete, Button, Card, List} from "antd";
+import React from "react";
+import {Button, Input, List} from "antd";
+import {Card} from "react-bootstrap";
 import Search from "./Search";
 
 
@@ -25,19 +26,30 @@ export default function Service() {
     ];
 
     return (
-        <div>
-            <Search onChange={(e) => {
-                console.log(e.target.value)
-            }} searchText={"Search Service"}/>
+        <div style={{margin: "3% 3%"}}>
+            <div style={{backgroundColor: "#f7f7f7", minHeight: "60px", marginTop: "2px", marginBottom: "25px"}}>
+                <Input style={{
+                    maxWidth: "300px",
+                    marginTop: "10px",
+                    float: "right",
+                    marginRight: "10px",
+                    minHeight: '40px'
+                }} placeholder="Search Service"/>
+            </div>
             <List
                 grid={{gutter: 16, column: 4}}
                 dataSource={data}
                 renderItem={item => (
                     <List.Item>
-                        <Card title={item.title}
-                              actions={[<a key="list-loadmore-edit">Delete</a>,
-                                  <a href={"/services/id"} key="list-loadmore-more">View</a>]}>
-                            content
+                        <Card style={{width: '18rem'}}>
+                            <Card.Body>
+                                <Card.Title>{item.title}</Card.Title>
+                                <Card.Text>
+                                    Some quick example text to build on the card title and make up the bulk of
+                                    the card's content.
+                                </Card.Text>
+                                <Button variant="primary">Update</Button>
+                            </Card.Body>
                         </Card>
                     </List.Item>
                 )}

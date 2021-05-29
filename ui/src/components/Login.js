@@ -1,92 +1,136 @@
-import React, {useEffect} from "react";
-import {Button, Checkbox, Col, Form, Input, Row} from "antd";
+import React, {useState} from "react";
+import './login.css'
 import {useHistory} from "react-router";
 
+const loginInputsInit = [
+    {
+        label: "Email Address",
+        type: "text",
+        show: true,
+        id: "a"
+    }, {
+        label: "ACL token",
+        type: "password",
+        show: true,
+        id: "b"
+    }
+];
 
-export default function Login() {
+const Login = ({
+                   inputs,
+                   signUp,
+                   submitForm,
+               }) => (
+    <div className={signUp ? "login login-closed" : "login"}>
+        <h1>Log In</h1>
+        <hr/>
+        <Form
+            inputs={inputs}
+            submitForm={submitForm}
+        />
+    </div>
+);
+
+const Submit = () => (
+    <div>
+        <hr/>
+        <button
+            className="submit-button"
+            type="submit"
+        > Submit
+        </button>
+    </div>
+);
+
+
+const Input = ({
+                   label,
+                   type,
+                   show,
+                   id,
+               }) => (
+    <div className={show ? "field field-in" : "field"}>
+        <label className="label">{label}
+        </label>
+        <br/>
+        <input
+            className="input"
+            type={type}
+        />
+    </div>
+);
+
+const Form = ({
+                  inputs,
+                  submitForm
+              }) => {
+    const inputsMapped = inputs.map((i) => (
+        <Input
+            label={i.label}
+            type={i.type}
+            show={i.show}
+            id={i.id}
+        />
+    ));
+
+    return (
+        <form onSubmit={submitForm}>
+            {inputsMapped}
+            <Submit/>
+        </form>
+    );
+};
+
+export default function LoginComponent() {
 
     const history = useHistory();
-    useEffect(() => {
-        if (localStorage.getItem("x-access-token") !== null) {
-            history.push("/")
-        }
-    }, [])
 
-    const layout = {
-        labelCol: {
-            span: 8,
-        },
-        wrapperCol: {
-            span: 16,
-        },
-    };
-    const tailLayout = {
-        wrapperCol: {
-            offset: 8,
-            span: 16,
-        },
-    };
-    const onFinish = (values) => {
-        console.log('Success:', values);
-        localStorage.setItem("x-access-token", "adas")
+    const [signUp, setSignUp] = useState(false)
+    const [loginInputs, setLoginInputs] = useState(loginInputsInit)
+
+    const inUpClick = () => {
+        setSignUp(!signUp)
+        animateFields("signupInputs");
+        setTimeout(() => {
+            animateFields("loginInputs");
+        }, 100);
+    }
+
+    const animateFields = (formName) => {
+        let start, length, newForm;
+
+        newForm = loginInputs.slice();
+
+        start = 0;
+        length = newForm.length;
+
+        console.log(newForm);
+
+        let stagger = (i) => {
+            if (i < length) {
+                setTimeout(() => {
+                    newForm[i].show = !newForm[i].show
+                    this.setState({[formName]: newForm});
+                    stagger(i + 1);
+                }, 70);
+            }
+        };
+        stagger(start);
+    }
+
+    const submitForm = (e) => {
+        e.preventDefault();
         history.push("/")
-    };
-    const onFinishFailed = (errorInfo) => {
-        console.log('Failed:', errorInfo);
-    };
+    }
+
     return (
-        <Row>
-            <Col span={8}>
-                <div style={{paddingTop : "30vh", margin: "auto", width : "55%"}}>
-                    <Form
-                        {...layout}
-                        name="basic"
-                        initialValues={{
-                            remember: true,
-                        }}
-                        onFinish={onFinish}
-                        onFinishFailed={onFinishFailed}
-                    >
-                        <Form.Item
-                            label="Email Address"
-                            name="email_address"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Please input your email address!',
-                                },
-                            ]}
-                        >
-                            <Input/>
-                        </Form.Item>
-                        <Form.Item
-                            label="ACL Token"
-                            name="token"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Please input your token!',
-                                },
-                            ]}
-                        >
-                            <Input.Password/>
-                        </Form.Item>
-
-                        <Form.Item {...tailLayout} name="remember" valuePropName="checked">
-                            <Checkbox>Remember me</Checkbox>
-                        </Form.Item>
-
-                        <Form.Item {...tailLayout}>
-                            <Button type="primary" htmlType="submit">
-                                Submit
-                            </Button>
-                        </Form.Item>
-                    </Form>
-                </div>
-            </Col>
-            <Col style={{backgroundColor: "#f7f7f7", minHeight: "100vh"}} span={16}>
-
-            </Col>
-        </Row>
-    )
+        <div>
+            <Login
+                signUp={signUp}
+                inputs={loginInputs}
+                inUpClick={inUpClick}
+                submitForm={submitForm}
+            />
+        </div>
+    );
 }

@@ -1,0 +1,212 @@
+@import url(https://fonts.googleapis.com/css?family=Quicksand:300,400,700);
+
+@import url(https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css);
+
+body {
+    background: rgb(47, 89, 100);
+    background: -moz-linear-gradient(
+            left,
+            rgba(47, 89, 100,1) 0%,
+            rgba(47, 89, 200,1) 100%
+    );
+    background: -webkit-gradient(
+            left top,
+            right top,
+            color-stop(0%, rgba(47, 89, 100,1)),
+            color-stop(100%, rgba(47, 89, 200,1))
+    );
+    background: -webkit-linear-gradient(
+            left,
+            rgba(47, 89, 100,1) 0%,
+            rgba(47, 89, 200,1) 100%
+    );
+    margin: 0;
+    pdading: 0;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    font-family: 'quicksand';
+}
+
+hr {
+    border: 0;
+    height: 1px;
+    opacity: .3;
+    background-image: linear-gradient(
+            to right,
+            rgba(255,255,255,.2),
+            rgba(255,255,255,1),
+            rgba(255,255,255,.2)
+    );
+}
+
+.login {
+    opacity: 1;
+    visiblity: visible;
+    position: absolute;
+    z-index: 1000;
+    top: 50%;
+    left: 50%;
+    margin-top: -230px;
+    margin-left: -210px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    background-color: rgba(255,255,255,.3);
+    height: 440px;
+    width: 400px;
+    color: white;
+    text-align: center;
+    border-radius: 2px;
+    -webkit-box-shadow: 10px 10px 15px -6px rgba(0,0,0,0.25);
+    transition:
+            opacity .3s ease-in .3s,
+            visibility .3s ease-in .3s;
+    transform: scale(.9);
+}
+
+.sign-up {
+    opacity: 1;
+    visiblity: visible;
+    position: absolute;
+    z-index: 2000;
+    top: 50%;
+    left: 50%;
+    margin-top: -330px;
+    margin-left: -210px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    background-color: rgba(255,255,255,.3);
+    height: 640px;
+    width: 400px;
+    color: white;
+    text-align: center;
+    border-radius: 2px;
+    -webkit-box-shadow: 10px 10px 15px -6px rgba(0,0,0,0.25);
+    transition:
+            opacity .3s ease-in .3s,
+            visibility .3s ease-in .3s;
+    transform: scale(.9);
+}
+
+.login-closed {
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    margin-left: -400px;
+    transition:
+            opacity .3s ease-out,
+            visibility .3s ease-out,
+            margin .3s cubic-bezier(0.600, -0.280, 0.735, 0.045);
+}
+
+.sign-up-closed {
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    margin-left: -400px;
+    transition:
+            opacity .3s ease-out,
+            visibility 3s ease-out,
+            margin .3s cubic-bezier(0.600, -0.280, 0.735, 0.045);
+}
+
+.field {
+    margin: 20px;
+    margin-left: 50px;
+    text-align: left;
+}
+
+.input {
+    margin: 5px;
+    width: 300px;
+    margin-left: -5px;
+    height: 40px;
+    border-radius: 2px;
+    border: none;
+    font-size: 18px;
+    padding: 5px;
+    color: #25291b;
+    background-color: rgba(255,255,255, .5);
+    -webkit-box-shadow: 10px 10px 10px -10px rgba(0,0,0,0.3);
+    transition: background-color .4s ease-out;
+}
+
+.input:focus {
+    outline: none;
+    background-color: rgba(255,255,255, .8)
+}
+
+.label {
+    font-weight: lighter;
+    margin-left: -5px;
+}
+
+.submit-button {
+    cursor: pointer;
+    margin-top: 20px;
+    width: 310px;
+    height: 50px;
+    font-size: 20px;
+    border: none;
+    background-color: rgba(0,0,0,.6);
+    border-radius: 2px;
+    color: white;
+    font-weight: bold;
+    letter-spacing: 3px;
+
+    transition: background-color .4s ease-out;
+}
+
+.submit-button:hover {
+    background-color: rgba(0,0,0,.7);
+}
+
+.submit-button:focus {
+    outline: none;
+    background-color: rgba(0,0,0,.7);
+}
+
+.in-out {
+    font-size: 12px;
+    margin-top: 30px;
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
+.in-out a {
+    color: rgba(0,0,0, .7);
+    text-decoration: none;
+    margin-left: 17px;
+    border: 1px solid rgba(0,0,0, .7);
+    border-radius: 2px;
+    padding: 2px;
+    transition: all .4s ease-out;
+}
+
+.in-out a:hover {
+    color: rgba(255,255,255, 1);
+    border: 1px solid rgba(255,255,255, 1);
+}
+
+.field-in {
+    animation: pulse .7s 1;
+}
+
+.animate-check {
+    margin-left: 5px;
+    animation: pulse2 .4s 1;
+}
+
+@keyframes pulse {
+    0% { transform: scale(.8); }
+    40% { transform: scale(1.2); }
+    70% { transform: scale(1); }
+    90% { transform: scale(1.01); }
+    100%{ transform: scale(1); }
+}
+
+@keyframes pulse2 {
+    0% { transform: scale(.1); opacity: 0;}
+    50% { transform: scale(1.4); opacity: 1;}
+    100% { transform: scale(1); }
+}
