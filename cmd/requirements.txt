@@ -1,0 +1,6 @@
+click==7.1.2
+pyfiglet==0.8.post1
+inquirer==2.7.0
+requests==2.24.0
+cryptography==3.3.1
+websocket==0.2.1
