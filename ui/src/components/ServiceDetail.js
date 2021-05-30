@@ -3,7 +3,6 @@ import NavbarComponent from "./Navbar";
 import Editor from "@monaco-editor/react";
 import {Col, Collapse, Row, Statistic} from "antd";
 import {getServiceDetails} from "../apis/titan";
-import {useParams} from "react-router";
 
 export default function ServiceDetail() {
 
@@ -11,7 +10,7 @@ export default function ServiceDetail() {
     useEffect(() => {
         let p = window.location.href.split("/")
         getServiceDetails(p[p.length-1]).then(r => {
-            setData(r)
+            setData(r.msg.metadata)
         })
     }, [])
     return (
@@ -21,17 +20,20 @@ export default function ServiceDetail() {
                 <Collapse defaultActiveKey={['1']}>
                     <Collapse.Panel header="Current Service stats" key="1">
                         <Row gutter={16}>
-                            <Col span={6}>
-                                <Statistic title="Current Deployed Version" value={"1.0.1"}/>
+                            <Col span={4}>
+                                <Statistic title="Current Deployed Version" value={data.version}/>
                             </Col>
-                            <Col span={6}>
-                                <Statistic title="Service Name" value={93}/>
+                            <Col span={4}>
+                                <Statistic title="Service Name" value={data.name}/>
                             </Col>
-                            <Col span={6}>
-                                <Statistic title="last deployed By" value={"test name"}/>
+                            <Col span={4}>
+                                <Statistic title="first deployed time" value={data.info.first_deployed}/>
                             </Col>
-                            <Col span={6}>
-                                <Statistic title="last deployed time" value={"time"}/>
+                            <Col span={4}>
+                                <Statistic title="last deployed time" value={data.info.last_deployed}/>
+                            </Col>
+                            <Col span={4}>
+                                <Statistic title="Status" value={data.status}/>
                             </Col>
                         </Row>
                     </Collapse.Panel>
@@ -40,6 +42,7 @@ export default function ServiceDetail() {
                             height="50vh"
                             defaultLanguage="yaml"
                             defaultValue="// some comment"
+                            code={data.manifest}
                         />
                     </Collapse.Panel>
                     <Collapse.Panel header="Rollbacks and deployments" key="3">
