@@ -73,7 +73,7 @@ app.delete('/odin/service/:serviceId', (req, res, next) => {
             'msg': rep.data
         })
     }).catch(err => {
-        logObj.note = 'Exception encountered = '.concat(err.message);
+        logObj.note = 'Exception encountered = '.concat(JSON.stringify(err.message));
         logger.info(logObj);
         /*
         res.status(err.status);
@@ -87,45 +87,6 @@ app.delete('/odin/service/:serviceId', (req, res, next) => {
         })
     });
 
-});
-
-// Get a service with a serviceId
-app.get('/odin/service/:serviceId', (req, res, next) => {
-    let apiUrl = globals.ODIN_SERVICE_URL + globals.GET_SERVICE_ENDPOINT
-                 + req.params.serviceId;
-
-    let logObj = {
-        'path': globals.GET_SERVICE_ENDPOINT + req.params.serviceId,
-        'method': 'GET',
-        'headers': req.headers,
-        'input': req.params.serviceId
-    }
-
-    axios({
-        method: 'get',
-        url: apiUrl,
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    }).then(rep => {
-        res.status(rep.status);
-        res.send({
-            'msg': rep.data
-        })
-    }).catch(err => {
-        logObj.note = 'Error encountered = '.concat(err.response);
-        logger.error(logObj);
-        /*
-        res.status(err.status);
-        res.send({
-            'msg': err.response.statusText
-        })
-         */
-        res.status(500);
-        res.send({
-            'msg': 'Something went wrong'
-        })
-    })
 });
 
 // Get all existing services

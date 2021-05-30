@@ -1,11 +1,19 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import NavbarComponent from "./Navbar";
 import Editor from "@monaco-editor/react";
 import {Col, Collapse, Row, Statistic} from "antd";
+import {getServiceDetails} from "../apis/titan";
+import {useParams} from "react-router";
 
 export default function ServiceDetail() {
 
-    const code = ""
+    const [data, setData] = useState({})
+    useEffect(() => {
+        let p = window.location.href.split("/")
+        getServiceDetails(p[p.length-1]).then(r => {
+            setData(r)
+        })
+    }, [])
     return (
         <div style={{backgroundColor: 'white', minHeight: '100vh'}}>
             <NavbarComponent/>

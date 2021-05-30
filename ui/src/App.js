@@ -17,7 +17,7 @@ function App() {
                     <Route exact path={"/"}>
                         <Landing/>
                     </Route>
-                    <Route exact path={"/service/:id"}>
+                    <Route path={"/service/:id"}>
                         <ServiceDetail/>
                     </Route>
                     <Route exact path={"/login"}>

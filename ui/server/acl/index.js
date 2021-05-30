@@ -6,7 +6,7 @@ const logger = require("./../logger");
 async function authenticateTheUser(claims) {
     let userEmailPrefix = "user:email_address-"
     let emailFromClaimsData = userEmailPrefix.concat(claims['data']['email']);
-    
+
     let aclTokenAgainstEmail;
 
     try {
@@ -32,7 +32,7 @@ async function authenticateTheUser(claims) {
 }
 
 async function getUserInfo(aclToken) {
-    
+
     var aclKeywordPrefix = "acl:acl_token-";
     let userInfoSearchKey = aclKeywordPrefix.concat(aclToken);
     var userInfo;
@@ -58,13 +58,13 @@ async function getUserInfo(aclToken) {
     };
 }
 
-/* 
-   We might not even need this function 
-   once I start packing all the claims 
+/*
+   We might not even need this function
+   once I start packing all the claims
    inside the jwt-token passed.
    For that I'll be sending more values
    in the json will be jwt-encoded after
-   successful login 
+   successful login
 */
 
 async function isUserAdmin(accessToken) {
@@ -129,7 +129,7 @@ function decodeTokenForUserInfo(accessToken) {
     }
 
     logObj.note = 'Decoded JWT';
-    logObj.info(logObj);
+    logger.info(logObj);
 
     return {
         'status': 200,
