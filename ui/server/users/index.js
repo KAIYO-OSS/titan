@@ -9,6 +9,48 @@ const bodyParser = require("body-parser");
 const acl = require("./../acl");
 const app = express();
 
+async function createDefaultAdminUser() {
+    let emailId = globals.ADMIN_EMAIL_ADDRESS;
+    let aclToken = globals.ADMIN_ACL_TOKEN;
+
+    let logObj = {
+        'path': 'create-default-user',
+        'emailId': emailId,
+        'aclToken': aclToken
+    }
+
+    let userKey = 'user:email_address-'.concat(emailId);
+
+    try {
+        let d = etcdClient.put(userKey, aclToken);
+    } catch (e) {
+        logObj.note = 'DB error encountered => '.concat(e.message);
+        logger.info(logObj);
+    }
+
+    let aclTokenFullKey = "acl:acl_token-".concat(aclToken);
+
+    let userData = {
+        'designation': 'Developer',
+        'role': 'ADMIN',
+        'managers': [],
+        'apiAccess': [],
+        'isActive': true,
+        'name': 'Kaiyo-Admin'
+    }
+
+    try {
+        let x = etcdClient.put(aclTokenFullKey, JSON.stringify(userData));
+    } catch (e) {
+        logObj.note = 'DB error encountered = '.concat(e.message);
+        logger.error(logObj);
+    }
+
+    logObj.note = 'Default ADMIN user created';
+    logger.info(logObj);
+
+    return;
+}
 app
     .use(express.json())
     .use('/search', async function(req, res, next) {
@@ -190,21 +232,21 @@ app
         }
 
         if(!isRequestMakerAdmin) {
-            logObj.note('Admin rights unfulfilled');
+            logObj.note = 'Admin rights unfulfilled';
             logger.info(logObj);
             res.status(403);
             res.send({
                 'msg': 'Could not verify user\'s access token'
             })
         }else if(isRequestMakerAdmin === Boolean(0)) {
-            logObj.note('Admin right unfulfilled');
+            logObj.note = 'Admin right unfulfilled';
             logger.info(logObj);
             res.status(403);
             res.send({
                 'msg': 'The user doesn\'t have access to users new user'
             })
         }else if(active === Boolean(0)) {
-            logObj.note('User is inactive.');
+            logObj.note = 'User is inactive.';
             logger.info(logObj);
             res.status(403);
             res.send({
@@ -214,11 +256,11 @@ app
 
         let authResp = acl.authenticateTheUser(userValidate);
 
-        logObj.note('The value of authResp = %s', JSON.stringify(authResp));
+        logObj.note = 'The value of authResp = '.concat(JSON.stringify(authResp));
         logger.info(logObj);
 
         if(authResp['status'] !== 200) {
-            logObj.note('Failure response received from Auth');
+            logObj.note = 'Failure response received from Auth';
             logger.info(logObj);
             res.status(authResp['status']);
             res.send({
@@ -232,10 +274,8 @@ app
 
         try {
             let d = etcdClient.put(userKey, userAcl);
-            logObj.note('Key-Value of %s and %s inserted', userKey, userAcl);
-            logger.info(logObj);
         } catch (e) {
-            logObj.note('DB error encountered = %s', e.message);
+            logObj.note = 'DB error encountered => '.concat(e.message);
             logger.info(logObj);
             res.status(500);
             res.send({
@@ -257,10 +297,10 @@ app
 
         try {
             let x = etcdClient.put(aclTokenFullKey, JSON.stringify(userData));
-            logObj.note('User claims written successfully');
+            logObj.note = 'User claims written successfully';
             logger.info(logObj);
         } catch (e) {
-            logObj.note('DB error encountered = ', e.message);
+            logObj.note = 'DB error encountered = '.concat(e.message);
             logger.error(logObj);
             res.status(500);
             res.send({
@@ -281,6 +321,12 @@ app
         /* -> If the acl-token in the req-headers has an admin flag signature.
            -> Also, check if the user making the request is active or not.
         */
+
+        let logObj = {
+            'path': '/deactivate',
+            'input': req.body
+        }
+
         let accessToken = req.headers['x-access-token'];
         let reqMakerUserInfo = acl.decodeTokenForUserInfo(accessToken);
         let aclOfReqMaker = reqMakerUserInfo['acl'];
@@ -301,8 +347,6 @@ app
             })
         }
 
-        logger.info('The user with aclToken -> %s has user deactivation rights',
-            aclOfReqMaker);
 
         let emailAddressForDeactivation = req.body['emailId'];
 
@@ -374,3 +418,4 @@ app
     });
 
 module.exports = app;
+module.exports.createDefaultAdminUser = createDefaultAdminUser;
