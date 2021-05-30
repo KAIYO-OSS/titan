@@ -18,15 +18,15 @@ Please follow INSTALL.md for suitable package for your system.
 
 ## Contribution 
 
-Please follow [CONTRIB.md](https://github.com/KAIYO-OSS/titan/CONTRIBUTION.md) for contribution guidelines 
+Please follow [CONTRIB.md](https://github.com/KAIYO-OSS/titan/blob/master/CONTRIBUTION.md) for contribution guidelines 
 
 ## Security 
 
-Please follow [SECURITY.md](https://github.com/KAIYO-OSS/titan/SECURITY.md) for security guidelines 
+Please follow [SECURITY.md](https://github.com/KAIYO-OSS/titan/blob/master/SECURITY.md) for security guidelines 
 
 ## Conduct 
 
-Please follow [CONDUCT.md](https://github.com/KAIYO-OSS/titan/CONDUCT.md) for conduct guidelines 
+Please follow [CONDUCT.md](https://github.com/KAIYO-OSS/titan/blob/master/CONDUCT.md) for conduct guidelines 
 
 ## Open source licensing info
 
