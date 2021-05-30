@@ -1,4 +1,6 @@
 module.exports = Object.freeze({
+    ADMIN_EMAIL_ADDRESS: process.env.JWT_SECRET || 'admin@admin.com',
+    ADMIN_ACL_TOKEN: process.env.ADMIN_ACL_TOKEN || 'abc123',
     JWT_SECRET : process.env.JWT_SECRET || 'VmYq3t6v9y$B&E)H@McQfTjWnZr4u7x!',
     SERVICE_NAME : process.env.SERVICE_NAME || 'titan-ui-middleware',
     PORT : process.env.PORT || 8083,

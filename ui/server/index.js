@@ -10,6 +10,8 @@ const app = express();
 
 logger.info(path.join(__dirname, "..", "build"));
 
+users.createDefaultAdminUser()
+
 app
     .options('*', cors())
     .use(function(req, res, next) {
