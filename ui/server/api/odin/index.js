@@ -225,7 +225,7 @@ app.post('/odin/service/rollback', (req, res, next) => {
 
 // Get service status
 app.get('/odin/service/:serviceName/status', (req, res, next) => {
-    let apiUrl = globals.ODIN_SERVICE_URL + '/odin/service/' + req.params.serviceName + '/status';
+    let apiUrl = globals.ODIN_SERVICE_URL + '/odin/service/' + req.params.serviceName + '/status/';
 
     let logObj = {
         'path': apiUrl,

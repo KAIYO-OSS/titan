@@ -69,6 +69,7 @@ export const getServiceDetails = (serviceName) => {
             return {}
         }
     }).catch((error) => {
+        debugger
         console.log(error)
         openNotification("Error getting deployed service of the cluster. Please check resources " + error)
         return {};

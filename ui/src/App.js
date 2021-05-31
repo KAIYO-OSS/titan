@@ -6,25 +6,28 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import LoginComponent from "./components/Login";
 import Landing from "./components/landing";
 import ServiceDetail from "./components/ServiceDetail";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 
 function App() {
 
     return (
         <div>
-            <Router>
-                <Switch>
-                    <Route exact path={"/"}>
-                        <Landing/>
-                    </Route>
-                    <Route path={"/service/:id"}>
-                        <ServiceDetail/>
-                    </Route>
-                    <Route exact path={"/login"}>
-                        <LoginComponent/>
-                    </Route>
-                </Switch>
-            </Router>
+            <ErrorBoundary>
+                <Router>
+                    <Switch>
+                        <Route exact path={"/"}>
+                            <Landing/>
+                        </Route>
+                        <Route path={"/service/:id"}>
+                            <ServiceDetail/>
+                        </Route>
+                        <Route exact path={"/login"}>
+                            <LoginComponent/>
+                        </Route>
+                    </Switch>
+                </Router>
+            </ErrorBoundary>
         </div>
     );
 }
