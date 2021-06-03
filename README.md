@@ -2,19 +2,30 @@
 
 ## Description
 
-Titan is an open source CI/CD tool built with cloud native tools. Titan supports service deployments, secret management, resource access management, canary deployment etc. Titan currently supports deployments to Azure AKS. Titan comes with a console UI to manage services and resources. Titan configurations comes with custom tasks runners built with Apache airflow. Titan Db uses MongoDB and PSQL and titan runs natively on kubernetes but will also support VM's in the future. 
+Titan is an open source CI/CD tool built with cloud native tools. Titan supports service deployments, secret management, resource access management, canary deployment etc. Titan currently supports deployments to to Any kubernetes cluster as long as it an access it resources. Titan is built around making devs faster at deploying services to kubernetes using help charts. 
 
 ## Dependencies 
 
-- MongoDB 4.x
-- PSQL 8.x
-- Docker deskop for local testing 
-- minikube or kubernetes for docker 
+- Etcd 3
+- Python 3 
+- Nodejs >= 14
+- Docker deskop 
+- minikube or kubernetes
 
 
 ## Installation 
 
 Please follow INSTALL.md for suitable package for your system. 
+
+
+## TODO
+
+- [x] deployment for helm charts 
+- [x] rollbacks 
+- [x] service details  
+- [ ] access control list and SSO 
+- [ ] deployment approval and rejection 
+- [ ] cluster switching 
 
 ## Contribution 
 
