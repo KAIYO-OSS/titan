@@ -1,6 +1,6 @@
 import json
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from util.helm import Helm
 from models.deployRequest import DeployRequest
 from models.rollbackRequest import RollbackRequest
@@ -21,10 +21,7 @@ async def deploy_service(deploy_request: DeployRequest):
             "error": ""
         }
     except Exception as ex:
-        return {
-            "status": "500",
-            "error": "Service deployment failed: " + str(ex)
-        }
+        raise HTTPException(status_code=500, detail="Service deployment failed: " + str(ex))
 
 
 @router.delete("/odin/service/{service_name}", tags=["odin"])
@@ -37,14 +34,10 @@ async def delete_service(service_name):
             "error": ""
         }
     except Exception as ex:
-        return {
-            "status": "500",
-            "metadata": {},
-            "error": "Service delete failed: " + str(ex)
-        }
+        raise HTTPException(status_code=500, detail="Service delete failed: " + str(ex))
 
 
-@router.get("/odin/service/{service_name/status}", tags=["odin"])
+@router.get("/odin/service/{service_name}/status", tags=["odin"])
 async def get_status(service_name):
     try:
         status = Utils.getJson(Helm.getServiceStatus(service_name))
@@ -54,11 +47,7 @@ async def get_status(service_name):
             "error": ""
         }
     except Exception as ex:
-        return {
-            "status": "500",
-            "metadata": {},
-            "error": "Failed to fetch Service Status: " + str(ex)
-        }
+        raise HTTPException(status_code=500, detail="Failed to fetch Service Status: " + str(ex))
 
 
 @router.get("/odin/service/{service_name}/revisions", tags=["odin"])
@@ -71,11 +60,7 @@ async def get_revisions(service_name):
             "error": ""
         }
     except Exception as ex:
-        return {
-            "status": "500",
-            "metadata": {},
-            "error": "Failed to fetch Service Revisions: " + str(ex)
-        }
+        raise HTTPException(status_code=500, detail="Failed to fetch Service Revisions: " + str(ex))
 
 
 @router.post("/odin/service/rollback", tags=["odin"])
@@ -90,10 +75,7 @@ async def rollback_service(rollback_request: RollbackRequest):
             "error": ""
         }
     except Exception as ex:
-        return {
-            "status": "500",
-            "error": "Service deployment failed: " + str(ex)
-        }
+        raise HTTPException(status_code=500, detail="Service deployment failed: " + str(ex))
 
 
 @router.get("/odin/services/", tags=["odin"])
@@ -106,8 +88,5 @@ async def get_all_services():
             "error": ""
         }
     except Exception as ex:
-        return {
-            "status": "500",
-            "metadata": {},
-            "error": "Failed to fetch all services: " + str(ex)
-        }
+        raise HTTPException(status_code=500, detail="Failed to fetch all services: " + str(ex))
+
