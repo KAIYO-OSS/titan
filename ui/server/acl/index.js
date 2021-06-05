@@ -6,16 +6,15 @@ const logger = require("./../logger");
 async function authenticateTheUser(claims) {
     let userEmailPrefix = "user:email_address-"
     let emailFromClaimsData = userEmailPrefix.concat(claims['data']['email']);
-    
+
     let aclTokenAgainstEmail;
 
     try {
         let t = await etcdClient.get(emailFromClaimsData);
         aclTokenAgainstEmail = t;
-        
-        if(typeof aclTokenAgainstEmail == 'undefined' || claims['data']['acl'] !== aclTokenAgainstEmail) {
+        if(!aclTokenAgainstEmail || claims['data']['acl'] !== aclTokenAgainstEmail) {
             return {
-                'status': 403,
+                'status': 401,
                 'msg': 'Wrong acl token. Access denied.'
             };
         }
@@ -33,14 +32,14 @@ async function authenticateTheUser(claims) {
 }
 
 async function getUserInfo(aclToken) {
-    
+
     var aclKeywordPrefix = "acl:acl_token-";
     let userInfoSearchKey = aclKeywordPrefix.concat(aclToken);
     var userInfo;
     try {
         userInfo = await etcdClient.get(userInfoSearchKey);
 
-        if(typeof userInfo == 'undefined') {
+        if(!userInfo) {
             return {
                 'status': 404,
                 'msg': 'No user information available'
@@ -59,13 +58,13 @@ async function getUserInfo(aclToken) {
     };
 }
 
-/* 
-   We might not even need this function 
-   once I start packing all the claims 
+/*
+   We might not even need this function
+   once I start packing all the claims
    inside the jwt-token passed.
    For that I'll be sending more values
    in the json will be jwt-encoded after
-   successful login 
+   successful login
 */
 
 async function isUserAdmin(accessToken) {
@@ -83,16 +82,24 @@ function encodeClaimsIntoToken(claims) {
     let secret = globals.JWT_SECRET;
     let encoded = null;
 
+    logObj = {
+        'path': 'acl/index/encodeClaimsIntoToken',
+        'claims': claims
+    }
+
     try {
         encoded = jwt.sign(claims, secret, {algorithm: "HS256"});
     }catch(e) {
-        if(e instanceof jwt.JsonWebTokenError) {
-            return {
-                'status': 500,
-                'data': 'Internal Server Error'
-            };
-        }
+        logObj.note = 'Error encoding the claims data';
+        logger.error(logObj);
+        return {
+            'status': 500,
+            'data': 'Internal Server Error'
+        };
     }
+
+    logObj.note = 'Encoded the claims data';
+    logger.info(logObj);
 
     return {
         'status': 200,
@@ -105,20 +112,24 @@ function decodeTokenForUserInfo(accessToken) {
     var secret = globals.JWT_SECRET;
     var decoded = null;
 
+    logObj = {
+        'path': 'acl/index/decodeTokenForUserInfo',
+        'accessToken': accessToken
+    }
+
     try {
         decoded = jwt.verify(accessToken, secret, {algorithm: "HS256"});
     }catch(e) {
-        if(e instanceof jwt.JsonWebTokenError) {
-            return {
-                'status': 401,
-                'data': 'Invalid session'
-            };
-        }
+        logObj.note = 'Error decoding the JWT';
+        logger.error(logObj);
         return {
             'status': 400,
             'data': 'Bad Request'
         }
     }
+
+    logObj.note = 'Decoded JWT';
+    logger.info(logObj);
 
     return {
         'status': 200,
