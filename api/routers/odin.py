@@ -41,9 +41,13 @@ async def delete_service(service_name):
 async def get_status(service_name):
     try:
         status = Utils.getJson(Helm.getServiceStatus(service_name))
+        values = Utils.getJson(Helm.getServiceValues(service_name))
+        revisions = Utils.getJson(Helm.getServiceRevisions(service_name))
         return {
             "status": "200",
             "metadata": status,
+            "values": values,
+            "revisions": revisions,
             "error": ""
         }
     except Exception as ex:
