@@ -2,13 +2,37 @@ const express = require("express");
 const axios = require("axios");
 const app = express.Router();
 const logger = require('./../../logger');
-const globals = require('./../../constants')
+
+let endpoints = {
+    ODIN_SERVICE_URL: process.env.ODIN_SERVICE_URL || 'http://odin',
+    DEPLOY_WORKSPACE_ENDPOINT: '/odin/deploy/workspace',
+    DELETE_WORKSPACE_ENDPOINT: '/odin/remove/workspace/',
+    DEPLOY_SERVICE_ENDPOINT: '/odin/service',
+    UPDATE_SERVICE_ENDPOINT: '/odin/service',
+    GET_SERVICE_ENDPOINT: '/odin/service/',
+    GET_ALL_SERVICES_ENDPOINT: '/odin/services',
+    DELETE_SERVICE_ENDPOINT: '/odin/service/',
+    ROLLBACK_SERVICE_ENDPOINT: '/odin/service/rollback',
+    WORKSPACE_INFORMATION_ENDPOINT: '/details/workspace/info/',
+    ALL_WORKSPACES_ENDPOINT: '/details/workspaces/',
+    ALL_SERVICES_IN_WORKSPACE_ENDPOINT: '/odin/services',
+    ALL_DEPLOYMENTS_ENDPOINT: '/details/deployments/',
+    SERVICE_INFORMATION_ENDPOINT: '/details/service/info/',
+    CURRENT_CONFIGURATION_ENDPOINT: '/details/service/configuration/',
+    ALL_CONFIGURATIONS_ENDPOINT: '/details/service/configurationall',
+    DETAILS_HEALTH_CHECK_ENDPOINT: '/health',
+    POLLING_CREATE_WORKSPACE_ENDPOINT: '/polling/deploy/workspace/',
+    POLLING_DELETE_WORKSPACE_ENDPOINT: '/polling/remove/workspace/',
+    POLLING_DEPLOY_SERVICE_ENDPOINT: '/polling/deploy/service/',
+    POLLING_UPDATE_SERVICE_ENDPOINT: '/polling/update/service/',
+    POLLING_DELETE_SERVICE_ENDPOINT: '/polling/delete/service'
+}
 
 // Deploy a service
 app.post('/odin/service', (req, res, next) => {
-    let apiUrl = globals.ODIN_SERVICE_URL + globals.DEPLOY_SERVICE_ENPOINT;
+    let apiUrl = endpoints.ODIN_SERVICE_URL + endpoints.DEPLOY_SERVICE_ENDPOINT;
     let logObj = {
-        'path': globals.DEPLOY_SERVICE_ENPOINT,
+        'path': endpoints.DEPLOY_SERVICE_ENDPOINT,
         'method': 'POST',
         'headers': req.headers,
         'input': req.body
@@ -16,7 +40,7 @@ app.post('/odin/service', (req, res, next) => {
 
     let payload = req.body;
 
-    if(Object.entries(payload).length === 0) {
+    if (Object.entries(payload).length === 0) {
         res.status(400);
         res.send({
             'msg': 'Bad Request. No payload found.'
@@ -36,12 +60,6 @@ app.post('/odin/service', (req, res, next) => {
     }).catch(err => {
         logObj.note = 'Exception encountered = '.concat(err.response);
         logger.error(logObj);
-        /*
-        res.status(err.status);
-        res.send({
-            'msg': err.response.statusText
-        })
-         */
         res.status(500);
         res.send({
             'msg': 'Something went wrong'
@@ -51,11 +69,11 @@ app.post('/odin/service', (req, res, next) => {
 
 // Delete a service with serviceId
 app.delete('/odin/service/:serviceId', (req, res, next) => {
-    let apiUrl = globals.ODIN_SERVICE_URL + globals.DELETE_SERVICE_ENDPOINT
-                 + req.params.serviceId;
+    let apiUrl = endpoints.ODIN_SERVICE_URL + endpoints.DELETE_SERVICE_ENDPOINT
+        + req.params.serviceId;
 
     let logObj = {
-        'path': globals.DELETE_SERVICE_ENDPOINT + req.params.serviceId,
+        'path': endpoints.DELETE_SERVICE_ENDPOINT + req.params.serviceId,
         'method': 'DELETE',
         'headers': req.headers,
         'input': req.params.serviceId
@@ -75,12 +93,6 @@ app.delete('/odin/service/:serviceId', (req, res, next) => {
     }).catch(err => {
         logObj.note = 'Exception encountered = '.concat(JSON.stringify(err.message));
         logger.info(logObj);
-        /*
-        res.status(err.status);
-        res.send({
-            'msg': err.response.statusText
-        })
-         */
         res.status(500);
         res.send({
             'msg': 'Something went wrong'
@@ -91,10 +103,10 @@ app.delete('/odin/service/:serviceId', (req, res, next) => {
 
 // Get all existing services
 app.get('/odin/services/', (req, res, next) => {
-    let apiUrl = globals.ODIN_SERVICE_URL + globals.GET_ALL_SERVICES_ENDPOINT;
+    let apiUrl = endpoints.ODIN_SERVICE_URL + endpoints.GET_ALL_SERVICES_ENDPOINT;
 
     let logObj = {
-        'path': globals.GET_ALL_SERVICES_ENDPOINT,
+        'path': endpoints.GET_ALL_SERVICES_ENDPOINT,
         'method': 'GET',
         'headers': req.headers,
         'input': ''
@@ -114,12 +126,6 @@ app.get('/odin/services/', (req, res, next) => {
     }).catch(err => {
         logObj.note = 'Error encountered = '.concat(err.message);
         logger.info(logObj);
-        /*
-        res.status(err.status);
-        res.send({
-            'msg': err.response.statusText
-        })
-         */
         res.status(500);
         res.send({
             'msg': 'Something went wrong'
@@ -129,10 +135,10 @@ app.get('/odin/services/', (req, res, next) => {
 
 // Update a service with parameters
 app.put('/odin/service', (req, res, next) => {
-    let apiUrl = globals.ODIN_SERVICE_URL + globals.UPDATE_SERVICE_ENDPOINT;
+    let apiUrl = endpoints.ODIN_SERVICE_URL + endpoints.UPDATE_SERVICE_ENDPOINT;
 
     let logObj = {
-        'path': globals.UPDATE_SERVICE_ENDPOINT,
+        'path': endpoints.UPDATE_SERVICE_ENDPOINT,
         'method': 'PUT',
         'headers': req.headers,
         'input': req.body
@@ -140,7 +146,7 @@ app.put('/odin/service', (req, res, next) => {
 
     let payload = req.body;
 
-    if(Object.entries(payload).length === 0) {
+    if (Object.entries(payload).length === 0) {
         res.status(400);
         res.send({
             'msg': 'Bad request. No payload found.'
@@ -162,12 +168,6 @@ app.put('/odin/service', (req, res, next) => {
     }).catch(err => {
         logObj.note = 'Error encountered = '.concat(err.message);
         logger.error(logObj);
-        /*
-        res.status(err.status);
-        res.send({
-            'msg': err.response.statusText
-        })
-         */
         res.status(500);
         res.send({
             'msg': 'Something went wrong'
@@ -177,16 +177,16 @@ app.put('/odin/service', (req, res, next) => {
 
 // Service rollback API
 app.post('/odin/service/rollback', (req, res, next) => {
-    let apiUrl = globals.ODIN_SERVICE_URL + globals.ROLLBACK_SERVICE_ENDPOINT;
+    let apiUrl = endpoints.ODIN_SERVICE_URL + endpoints.ROLLBACK_SERVICE_ENDPOINT;
 
     let logObj = {
-        'path': globals.ROLLBACK_SERVICE_ENDPOINT,
+        'path': endpoints.ROLLBACK_SERVICE_ENDPOINT,
         'method': 'POST',
         'headers': req.headers,
         'input': req.body
     }
 
-    if(Object.entries(req.body).length === 0) {
+    if (Object.entries(req.body).length === 0) {
         logObj.note = 'Bad input. No payload found.';
         logger.error(logObj);
         res.status(400);
@@ -210,12 +210,6 @@ app.post('/odin/service/rollback', (req, res, next) => {
     }).catch(err => {
         logObj.note = 'Error encountered = '.concat(err.message);
         logger.error(logObj);
-        /*
-        res.status(err.status);
-        res.send({
-            'msg': err.response.statusText
-        })
-         */
         res.status(500);
         res.send({
             'msg': 'Something went wrong'
@@ -225,7 +219,7 @@ app.post('/odin/service/rollback', (req, res, next) => {
 
 // Get service status
 app.get('/odin/service/:serviceName/status', (req, res, next) => {
-    let apiUrl = globals.ODIN_SERVICE_URL + '/odin/service/' + req.params.serviceName + '/status/';
+    let apiUrl = endpoints.ODIN_SERVICE_URL + '/odin/service/' + req.params.serviceName + '/status/';
 
     let logObj = {
         'path': apiUrl,
@@ -248,12 +242,6 @@ app.get('/odin/service/:serviceName/status', (req, res, next) => {
     }).catch(err => {
         logObj.note = 'Error encountered = '.concat(err.message);
         logger.error(logObj);
-        /*
-        res.status(err.status);
-        res.send({
-            'msg': err.response.statusText
-        })
-         */
         res.status(500);
         res.send({
             'msg': 'Something went wrong'
@@ -262,9 +250,8 @@ app.get('/odin/service/:serviceName/status', (req, res, next) => {
 });
 
 
-
 app.get('/details/health', (req, res, next) => {
-    let apiUrl = globals.ODIN_SERVICE_URL + globals.DETAILS_HEALTHCHECK_ENDPOINT;
+    let apiUrl = endpoints.ODIN_SERVICE_URL + endpoints.DETAILS_HEALTH_CHECK_ENDPOINT;
     let logObj = {
         'path': '/details/health',
         'method': 'GET',
@@ -285,12 +272,6 @@ app.get('/details/health', (req, res, next) => {
     }).catch(err => {
         logObj.note = 'Error encountered = '.concat(err.message);
         logger.error(logObj);
-        /*
-        res.status(err.status);
-        res.send({
-            'msg': err.response.statusText
-        })
-         */
         res.status(500);
         res.send({
             'msg': 'Something went wrong'

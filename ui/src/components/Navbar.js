@@ -1,13 +1,28 @@
 import React, {useEffect} from 'react';
 import {Nav, Navbar, NavDropdown} from "react-bootstrap";
 import {useHistory} from "react-router";
+import {auth, googleProvider} from "../config/firebase";
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 export default function NavbarComponent() {
 
     const history = useHistory();
 
-    useEffect(() => {
-
+    useEffect(async () => {
+        // await sleep(45000)
+        if (localStorage.getItem("expireAt") > Date.now() && localStorage.getItem("token")) return
+        await auth.signInWithPopup(googleProvider).then(result => {
+            debugger
+            var credential = result.credential;
+            var token = credential.accessToken;
+            var user = result.user;
+            localStorage.setItem("token", token)
+            localStorage.setItem("user", JSON.stringify(user))
+            localStorage.setItem("expireAt", Date.now() + 10000)
+        })
     }, [])
 
     const logout = () => {
