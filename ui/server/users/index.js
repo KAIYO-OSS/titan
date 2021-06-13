@@ -3,9 +3,6 @@ const globals = require("./../constants");
 const jwt = require('jsonwebtoken');
 const logger = require("./../logger");
 const express = require("express");
-const cors = require("cors");
-const path = require("path");
-const bodyParser = require("body-parser");
 const acl = require("./../acl");
 const app = express();
 
@@ -22,10 +19,11 @@ async function createDefaultAdminUser() {
     let userKey = 'user:email_address-'.concat(emailId);
 
     try {
-        let d = etcdClient.put(userKey, aclToken);
+        await etcdClient.put(userKey, aclToken);
     } catch (e) {
         logObj.note = 'DB error encountered => '.concat(e.message);
         logger.info(logObj);
+        throw e
     }
 
     let aclTokenFullKey = "acl:acl_token-".concat(aclToken);
@@ -40,23 +38,25 @@ async function createDefaultAdminUser() {
     }
 
     try {
-        let x = etcdClient.put(aclTokenFullKey, JSON.stringify(userData));
+        await etcdClient.put(aclTokenFullKey, JSON.stringify(userData));
     } catch (e) {
         logObj.note = 'DB error encountered = '.concat(e.message);
         logger.error(logObj);
+        throw e
     }
 
     logObj.note = 'Default ADMIN user created';
     logger.info(logObj);
 
-    return;
+    return logObj;
 }
+
 app
     .use(express.json())
-    .use('/search', async function(req, res, next) {
+    .use('/search', async function (req, res, next) {
         let secret = globals.APP_COMMON_SECRET;
         let k = req.body['k'];
-        if(!req.headers['secret'] || (req.headers['secret'] != secret)) {
+        if (!req.headers['secret'] || (req.headers['secret'] != secret)) {
             logger.info('Wrong secret key has been passed');
             res.status(403);
             res.send({
@@ -67,10 +67,10 @@ app
         let v;
         try {
             v = await etcdClient.get(k);
-            if(k.includes('acl:acl_token')) {
+            if (k.includes('acl:acl_token')) {
                 v = JSON.parse(v);
             }
-        }catch(e) {
+        } catch (e) {
             logger.info('DB error encountered in SEARCH function');
             res.status(500);
             res.send({
@@ -83,7 +83,7 @@ app
             'msg': v
         });
     })
-    .use('/insert', async function(req, res, next) {
+    .use('/insert', async function (req, res, next) {
         /*
             This function will be used for inserting key-value
             pairs in the ETCD DB for testing various endpoints.
@@ -91,7 +91,7 @@ app
             authenticated request.
          */
         let secret = globals.APP_COMMON_SECRET; // This password should be passed int he headers
-        if(!req.headers['secret'] || (req.headers['secret'] != secret)) {
+        if (!req.headers['secret'] || (req.headers['secret'] != secret)) {
             logger.info('Wrong secret key has been passed');
             res.status(403);
             res.send({
@@ -102,13 +102,13 @@ app
         let k = req.body['k'];
         let v = req.body['v'];
 
-        if(k.includes('acl:acl_token')) {
+        if (k.includes('acl:acl_token')) {
             v = JSON.stringify(v);
         }
 
         try {
-            let r = await etcdClient.put(k,v);
-        }catch(e) {
+            let r = await etcdClient.put(k, v);
+        } catch (e) {
             logger.info("DB error encountered in insert function");
             res.status(500);
             res.send({
@@ -121,7 +121,7 @@ app
             'msg': 'Data inserted successfully'
         });
     })
-    .use('/login', async function(req, res, next) {
+    .use('/login', async function (req, res, next) {
 
         let email = req.body['emailId'];
         let acl = req.body['acl'];
@@ -132,7 +132,7 @@ app
             'method': 'POST',
             'input': req.body
         }
-        if(!req.body || !email || !acl) {
+        if (!req.body || !email || !acl) {
             //logObj.note = 'Null payload/keys passed';
             //logObj.info(logObj);
             res.status(401);
@@ -144,7 +144,7 @@ app
         logger.info(logObj);
         try {
             aclTokenInDB = await etcdClient.get(aclSearchKey);
-            if(!aclTokenInDB) {
+            if (!aclTokenInDB) {
                 logObj.note = 'ACL token not found in DB';
                 logger.info(logObj);
                 res.status(401);
@@ -152,7 +152,7 @@ app
                     'msg': 'Access denied'
                 })
             }
-            if(acl != aclTokenInDB) {
+            if (acl != aclTokenInDB) {
                 logObj.note = 'ACL token in DB didn\'t match with the ACL passed';
                 logger.info(logObj);
                 res.status(401);
@@ -160,11 +160,11 @@ app
                     'msg': 'Access denied'
                 })
             }
-        }catch(e) {
+        } catch (e) {
             logObj.note('Error encountered => %s', e.message);
             logger.error(logObj);
             res.status(500);
-            res.send({'msg':'Internal Server Error'});
+            res.send({'msg': 'Internal Server Error'});
         }
 
         logObj.note = 'Acl Token in DB matched with the one passed';
@@ -175,7 +175,7 @@ app
 
         try {
             userInfoForClaims = await etcdClient.get(userInfoSearchKey);
-            if(!userInfoForClaims) {
+            if (!userInfoForClaims) {
                 logObj.note = 'User data not found for userInfoSearchKey = '
                     .concat(userInfoSearchKey);
                 logger.info(logObj);
@@ -184,7 +184,7 @@ app
                     'msg': 'User not found'
                 });
             }
-        }catch(e) {
+        } catch (e) {
             logObj.note = 'DB error encountered'
             logger.error(logObj);
             res.status(500);
@@ -200,7 +200,7 @@ app
             'acl': acl,
             'isActive': userInfoForClaims['isActive'],
             'role': userInfoForClaims['role'],
-            'timestamp': Math.floor(Date.now()/1000)
+            'timestamp': Math.floor(Date.now() / 1000)
         };
 
         let sessToken = jwt.sign(claimsToBeEncoded, globals.JWT_SECRET,
@@ -216,7 +216,7 @@ app
         });
 
     })
-    .use('/create', async function(req, res, next) {
+    .use('/create', async function (req, res, next) {
         res.header("Access-Control-Allow-Origin", "*");
         res.header("Access-Control-Allow-Headers", "Origin, Content-Type, Accept");
         res.header("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS");
@@ -231,26 +231,26 @@ app
             'input': req.body
         }
 
-        if(!isRequestMakerAdmin) {
+        if (!isRequestMakerAdmin) {
             logObj.note = 'Admin rights unfulfilled';
             logger.info(logObj);
             res.status(403);
             res.send({
                 'msg': 'Could not verify user\'s access token'
             })
-        }else if(isRequestMakerAdmin === Boolean(0)) {
+        } else if (isRequestMakerAdmin === Boolean(0)) {
             logObj.note = 'Admin right unfulfilled';
             logger.info(logObj);
             res.status(403);
             res.send({
                 'msg': 'The user doesn\'t have access to users new user'
             })
-        }else if(active === Boolean(0)) {
+        } else if (active === Boolean(0)) {
             logObj.note = 'User is inactive.';
             logger.info(logObj);
             res.status(403);
             res.send({
-               'msg': 'The user is not active to make this request'
+                'msg': 'The user is not active to make this request'
             });
         }
 
@@ -259,7 +259,7 @@ app
         logObj.note = 'The value of authResp = '.concat(JSON.stringify(authResp));
         logger.info(logObj);
 
-        if(authResp['status'] !== 200) {
+        if (authResp['status'] !== 200) {
             logObj.note = 'Failure response received from Auth';
             logger.info(logObj);
             res.status(authResp['status']);
@@ -313,7 +313,7 @@ app
             'msg': 'User created successfully'
         });
     })
-    .use('/deactivate', async function(req, res, next) {
+    .use('/deactivate', async function (req, res, next) {
         res.header("Access-Control-Allow-Origin", "*");
         res.header("Access-Control-Allow-Headers", "Origin, Content-Type, Accept");
         res.header("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS");
@@ -333,14 +333,14 @@ app
 
         let isRequestMakerAdmin = acl.isUserAdmin(aclOfReqMaker);
 
-        if(!isRequestMakerAdmin) {
+        if (!isRequestMakerAdmin) {
             res.status(403);
             res.send({
                 'msg': 'Could not verify user\'s access token'
             })
         }
 
-        if(isRequestMakerAdmin['msg'] === Boolean(0)) {
+        if (isRequestMakerAdmin['msg'] === Boolean(0)) {
             res.status(403);
             res.send({
                 'msg': 'The user doesn\'t have access to users new user'
@@ -357,13 +357,13 @@ app
         try {
             aclOfUserToBeDeactivated = etcdClient.get(userKey);
             logger.info('The acl-token of user to be deactived -> %s', aclOfUserToBeDeactivated);
-            if(typeof aclOfUserToBeDeactivated == 'undefined') {
+            if (typeof aclOfUserToBeDeactivated == 'undefined') {
                 res.status(404);
                 res.send({
                     'msg': 'The user to be deleted not found'
                 })
             }
-        }catch(e) {
+        } catch (e) {
             logger.info('DB error while fetching acl-token of user to be deactivated -> %s', e);
             res.status(500);
             res.send({
@@ -377,14 +377,14 @@ app
 
         try {
             userInfo = etcdClient.get(userDataSearchKey);
-            if(!userInfo) {
+            if (!userInfo) {
                 logger.info('userInfo not found for deactivateUser against the key -> %s', userDataSearchKey);
                 res.status(404);
                 res.send({
                     'msg': 'User to be deleted not found'
                 })
             }
-        }catch(e) {
+        } catch (e) {
             logger.info('DB error encountered in deactiveUser -> ', e);
             res.status(500);
             res.send({
@@ -400,9 +400,9 @@ app
 
         try {
             let ins = etcdClient.put(userDataSearchKey, userInfo);
-        }catch(e) {
+        } catch (e) {
             logger.info('DB error encountered in deactivateUser while putting formatted' +
-            'user data -> %s', e);
+                'user data -> %s', e);
             res.status(500);
             res.send({
                 'msg': 'Internal Server Error'

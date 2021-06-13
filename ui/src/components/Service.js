@@ -4,26 +4,6 @@ import {Card} from "react-bootstrap";
 import {useHistory} from "react-router";
 import {listAllServices} from "../apis/titan";
 
-// const data = [
-//     {
-//         title: 'nginx 1',
-//     },
-//     {
-//         title: 'nginx 2',
-//     },
-//     {
-//         title: 'redis',
-//     },
-//     {
-//         title: 'redis 4',
-//     },
-//     {
-//         title: 'Title 4',
-//     },
-//     {
-//         title: 'Title 4',
-//     },
-// ];
 
 export default function Service() {
 

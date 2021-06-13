@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@monaco-editor/react": "^4.0.11",
+    "@react-firebase/auth": "^0.2.10",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.6.3",
@@ -15,6 +16,7 @@
     "bunyan": "^1.8.15",
     "etcd3": "^1.1.0",
     "express": "^4.17.1",
+    "firebase": "^8.6.7",
     "jsonwebtoken": "^8.5.1",
     "jwt-simple": "^0.5.6",
     "node-env-run": "^4.0.2",
@@ -33,7 +35,8 @@
   },
   "scripts": {
     "start": "PORT=3001 react-scripts start",
-    "build": "react-scripts build",
+    "build": "npm ci && react-scripts build",
+    "prod": "node server/index.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "dev": "concurrently \"react-scripts start\" \"node server/index.js\""

@@ -7,12 +7,12 @@ import LoginComponent from "./components/Login";
 import Landing from "./components/landing";
 import ServiceDetail from "./components/ServiceDetail";
 import ErrorBoundary from "./components/ErrorBoundary";
+import "firebase/auth";
 
 
 function App() {
 
     return (
-        <div>
             <ErrorBoundary>
                 <Router>
                     <Switch>
@@ -28,7 +28,6 @@ function App() {
                     </Switch>
                 </Router>
             </ErrorBoundary>
-        </div>
     );
 }
 
