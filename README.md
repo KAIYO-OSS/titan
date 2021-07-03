@@ -2,7 +2,7 @@
 
 ## Description
 
-Titan is an open source CI/CD tool built with cloud native tools. Titan supports service deployments, secret management, resource access management, canary deployment etc. Titan currently supports deployments to to Any kubernetes cluster as long as it an access it resources. Titan is built around making devs faster at deploying services to kubernetes using helm charts. 
+Titan is an open source CI/CD tool built with cloud native tools. It supports service deployments, secret management, resource access management, canary deployment, etc. It currently supports deployments to any kubernetes cluster as long as it an access it resources. It is built around making devs faster at deploying services to kubernetes using helm charts. 
 
 ## Dependencies 
 
@@ -16,7 +16,7 @@ Titan is an open source CI/CD tool built with cloud native tools. Titan supports
 ## Installation 
 
 Currently supports MacOS and Linux Installations only 
-run respective docker instances. and a ```etcd``` client. 
+run respective docker instances and a ```etcd``` client. 
 
 ## TODO
 
