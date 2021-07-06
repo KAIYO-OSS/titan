@@ -1,6 +1,5 @@
 const bodyParser = require("body-parser");
 const express = require("express");
-const cors = require("cors");
 const path = require("path");
 const api = require("./api");
 const users = require("./api/users");
@@ -16,13 +15,6 @@ users.createDefaultAdminUser().then(r => {
 })
 
 app
-    // .use(cors)
-    // .use(function (req, res, next) {
-    //     res.header("Access-Control-Allow-Origin", "*");
-    //     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    //     res.header("Access-Control-Expose-Headers", "x-access-token, Uid")
-    //     next();
-    // })
     .get("/health", (req, res) => res.send("OK"))
     .use("/api", api)
     .use(express.static(path.join(__dirname, "..", "build")))
