@@ -10,11 +10,15 @@ const app = express();
 
 logger.info(path.join(__dirname, "..", "build"));
 
-users.createDefaultAdminUser()
+users.createDefaultAdminUser().then(r => {
+    console.log("admin created ")
+}).catch(err => {
+    console.log("admin cannot be created ")
+})
 
 app
     .options('*', cors())
-    .use(function(req, res, next) {
+    .use(function (req, res, next) {
         res.header("Access-Control-Allow-Origin", "*");
         res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
         res.header("Access-Control-Expose-Headers", "x-access-token, Uid")
