@@ -1,10 +1,9 @@
 const express = require('express');
 const app = express.Router();
 const odinApi = require("./odin");
+const userApi = require("./users")
 const acl = require("./../acl");
 const logger = require('./../logger');
-const jwt = require('jsonwebtoken');
-const { response } = require('express');
 
 app
     .use(express.json())
@@ -13,12 +12,15 @@ app
         res.header("Access-Control-Allow-Headers", "Origin, Content-Type, Accept");
         res.header("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS");
 
+        if (req.path.includes("login") || req.path.includes("logout")) {
+            return next()
+        }
         let logObj = {
             'path': 'api/index'
         }
 
         let accessToken = req.headers['x-access-token'];
-        if(!accessToken) {
+        if (!accessToken) {
             logObj.note = 'No access token sent';
             logger.error(logObj);
             res.status(401);
@@ -30,7 +32,7 @@ app
 
         let claims = acl.decodeTokenForUserInfo(accessToken);
 
-        if(!claims) {
+        if (!claims) {
             logObj.note = 'Claims for the access token is NULL';
             logger.error(logObj);
             res.status(401);
@@ -40,11 +42,11 @@ app
             return;
         }
 
-        if(typeof claims === 'string') {
+        if (typeof claims === 'string') {
             claims = JSON.parse(claims);
         }
 
-        if(Object.keys(claims).length === 0 && claims.constructor === Object) {
+        if (Object.keys(claims).length === 0 && claims.constructor === Object) {
             res.status(401);
             res.send({
                 'msg': 'Incorrect user credentials. Access Denied.'
@@ -52,7 +54,7 @@ app
             return;
         }
 
-        if(claims['status'] === 400) {
+        if (claims['status'] === 400) {
             res.status(401);
             res.send({
                 'msg': 'The access token is not accepted. Access Denied.'
@@ -62,7 +64,7 @@ app
 
         let authResp = await acl.authenticateTheUser(claims);
 
-        if(authResp['status'] === 500) {
+        if (authResp['status'] === 500) {
             logObj.note = 'Error encountered for access token = '.concat(accessToken);
             logger.error(logObj);
             res.status(500);
@@ -71,7 +73,7 @@ app
             })
             return;
 
-        }else if(authResp['status'] === 401) {
+        } else if (authResp['status'] === 401) {
             logObj.note = 'Access denied for token = '.concat(accessToken);
             logger.info(logObj);
             res.status(401);
@@ -79,10 +81,11 @@ app
                 'msg': 'Incorrect user credentials.'
             })
             return;
-        }        
+        }
         next();
     })
-    .use("/", odinApi)
+    .use("/odin", odinApi)
+    .use("/user", userApi)
 
 
 module.exports = app;

@@ -4,26 +4,6 @@ import {Card} from "react-bootstrap";
 import {useHistory} from "react-router";
 import {listAllServices} from "../apis/titan";
 
-// const data = [
-//     {
-//         title: 'nginx 1',
-//     },
-//     {
-//         title: 'nginx 2',
-//     },
-//     {
-//         title: 'redis',
-//     },
-//     {
-//         title: 'redis 4',
-//     },
-//     {
-//         title: 'Title 4',
-//     },
-//     {
-//         title: 'Title 4',
-//     },
-// ];
 
 export default function Service() {
 
@@ -59,7 +39,7 @@ export default function Service() {
     }
 
     return (
-        <div style={{margin: "3% 3%"}}>
+        <div style={{margin: "1% 1%"}}>
 
             <div style={{backgroundColor: "#f7f7f7", minHeight: "60px", marginTop: "2px", marginBottom: "25px"}}>
                 <Input style={{
