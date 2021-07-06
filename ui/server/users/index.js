@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const logger = require("./../logger");
 const express = require("express");
 const acl = require("./../acl");
-const app = express();
+const app = express.Router();
 
 async function createDefaultAdminUser() {
     let emailId = globals.ADMIN_EMAIL_ADDRESS;

@@ -17,7 +17,7 @@ users.createDefaultAdminUser().then(r => {
 })
 
 app
-    .options('*', cors())
+    .use(cors)
     .use(function (req, res, next) {
         res.header("Access-Control-Allow-Origin", "*");
         res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -27,7 +27,6 @@ app
     .get("/health-check", (req, res) => res.send("OK"))
     .use("/api", api)
     .use("/users", users)
-    .use(cors())
     .use(express.static(path.join(__dirname, "..", "build")))
     .use(bodyParser.json())
     .get("*", (req, res) => {
