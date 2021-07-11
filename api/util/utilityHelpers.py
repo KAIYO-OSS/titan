@@ -37,6 +37,24 @@ class Utils:
         except Exception as ex:
             raise Exception("getJson failed:", json_data, ex)
 
+    # etcd utility for getting Jsonified value
+    @staticmethod
+    def getJsonValue(client, key):
+        try:
+            json_object = json.loads(client.get(key)[0])
+            return json_object
+        except Exception as ex:
+            raise Exception("Getvalue:", key, ex)
+
+    # etcd utility for checking if a key exist
+    @staticmethod
+    def checkIfKeyExist(client, key):
+        try:
+            value = client.get(key)
+            return False if value is None else True
+        except Exception as ex:
+            raise Exception("CheckKey Failed:", key, ex)
+
     # json utilities
     @staticmethod
     def serializeJson(json_data):
