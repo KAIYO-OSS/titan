@@ -6,6 +6,11 @@ const users = require("./api/users");
 const constants = require("./constants")
 const app = express();
 
+console.log("All the env variables")
+console.log(process.env)
+console.log("The etcd db url ->")
+console.log(process.env.ETCD3_URL)
+
 users.createDefaultAdminUser()
     .then(res => {
         console.log(res)
@@ -43,7 +48,6 @@ app
     .get("*", (req, res) => {
         res.sendFile(path.join(__dirname, "..", "build/index.html"));
     })
-    .use(cors)
     .listen(constants.PORT, () => console.log(`Server started http://localhost:${constants.PORT}`));
 
 app.timeout = 2000;
