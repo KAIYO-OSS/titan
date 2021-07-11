@@ -5,8 +5,10 @@ from util.helm import Helm
 from models.deployRequest import DeployRequest
 from models.rollbackRequest import RollbackRequest
 from util.utilityHelpers import Utils
+import etcd3
 
 router = APIRouter()
+etcd = etcd3.client()
 
 
 @router.post("/odin/service/", tags=["odin"])
@@ -15,6 +17,8 @@ async def deploy_service(deploy_request: DeployRequest):
         Helm.odinHelmSetup()
         output = Utils.getJson(Helm.deployService(deploy_request.service_name,
                                                   deploy_request.chart_name, deploy_request.values))
+        service_list = Utils.getJson(Helm.listAllServices())
+        etcd.put('{user_id}:service_list'.format(user_id=deploy_request.userId), json.dumps(service_list))
         return {
             "status": "200",
             "metadata": output,
@@ -83,9 +87,13 @@ async def rollback_service(rollback_request: RollbackRequest):
 
 
 @router.get("/odin/services/", tags=["odin"])
-async def get_all_services():
+async def get_all_services(user_id: str):
     try:
-        service_list = Utils.getJson(Helm.listAllServices())
+        if Utils.checkIfKeyExist(etcd, '{user_id}:service_list'.format(user_id=user_id)):
+            service_list = Utils.getJsonValue(etcd, 'service_list')
+        else:
+            service_list = Utils.getJson(Helm.listAllServices())
+            etcd.put('{user_id}:service_list'.format(user_id=user_id), json.dumps(service_list))
         return {
             "status": "200",
             "metadata": service_list,
@@ -93,4 +101,3 @@ async def get_all_services():
         }
     except Exception as ex:
         raise HTTPException(status_code=500, detail="Failed to fetch all services: " + str(ex))
-
