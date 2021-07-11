@@ -1,9 +1,8 @@
 const bodyParser = require("body-parser");
 const express = require("express");
-const cors = require("cors");
 const path = require("path");
 const api = require("./api");
-const users = require("./users");
+const users = require("./api/users");
 const constants = require("./constants")
 const app = express();
 
@@ -27,6 +26,18 @@ app
     .get("/health-check", (req, res) => res.send("OK"))
     .use("/api", api)
     .use("/users", users)
+
+console.log("UI server directory - " + path.join(__dirname, "..", "build"));
+
+users.createDefaultAdminUser().then(r => {
+    console.log("admin created ")
+}).catch(err => {
+    console.log("admin cannot be created ")
+})
+
+app
+    .get("/health", (req, res) => res.send("OK"))
+    .use("/api", api)
     .use(express.static(path.join(__dirname, "..", "build")))
     .use(bodyParser.json())
     .get("*", (req, res) => {
@@ -34,3 +45,5 @@ app
     })
     .use(cors)
     .listen(constants.PORT, () => console.log(`Server started http://localhost:${constants.PORT}`));
+
+app.timeout = 2000;

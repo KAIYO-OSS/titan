@@ -20,7 +20,7 @@ export const doLogin = (username, token) => {
         emailId: username,
         acl: token
     };
-    return axios.post("http://localhost:8083/users/login", JSON.stringify(data), {
+    return axios.post("http://localhost:8083/api/user/login", JSON.stringify(data), {
         headers: header,
     }).then(response => {
         console.log(response)

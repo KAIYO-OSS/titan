@@ -39,7 +39,7 @@ export default function Service() {
     }
 
     return (
-        <div style={{margin: "3% 3%"}}>
+        <div style={{margin: "1% 1%"}}>
 
             <div style={{backgroundColor: "#f7f7f7", minHeight: "60px", marginTop: "2px", marginBottom: "25px"}}>
                 <Input style={{
