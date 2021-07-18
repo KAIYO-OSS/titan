@@ -5,8 +5,10 @@ from util.helm import Helm
 from models.deployRequest import DeployRequest
 from models.rollbackRequest import RollbackRequest
 from util.utilityHelpers import Utils
+import etcd3
 
 router = APIRouter()
+etcd = etcd3.client()
 
 
 @router.post("/odin/service/", tags=["odin"])
@@ -15,6 +17,8 @@ async def deploy_service(deploy_request: DeployRequest):
         Helm.odinHelmSetup()
         output = Utils.getJson(Helm.deployService(deploy_request.service_name,
                                                   deploy_request.chart_name, deploy_request.values))
+        service_list = Utils.getJson(Helm.listAllServices())
+        etcd.put('{acl_token}:service_list'.format(acl_token=deploy_request.acl_token), json.dumps(service_list))
         return {
             "status": "200",
             "metadata": output,
@@ -24,10 +28,12 @@ async def deploy_service(deploy_request: DeployRequest):
         raise HTTPException(status_code=500, detail="Service deployment failed: " + str(ex))
 
 
-@router.delete("/odin/service/{service_name}", tags=["odin"])
-async def delete_service(service_name):
+@router.delete("/odin/service/{service_name}/{acl_token}", tags=["odin"])
+async def delete_service(service_name, acl_token):
     try:
         Helm.deleteService(service_name)
+        service_list = Utils.getJson(Helm.listAllServices())
+        etcd.put('{acl_token}:service_list'.format(acl_token=acl_token), json.dumps(service_list))
         return {
             "status": "200",
 
@@ -83,9 +89,9 @@ async def rollback_service(rollback_request: RollbackRequest):
 
 
 @router.get("/odin/services/", tags=["odin"])
-async def get_all_services():
+async def get_all_services(acl_token: str):
     try:
-        service_list = Utils.getJson(Helm.listAllServices())
+        service_list = Utils.getJsonValue(etcd, '{acl_token}:service_list'.format(acl_token=acl_token))
         return {
             "status": "200",
             "metadata": service_list,
@@ -93,4 +99,3 @@ async def get_all_services():
         }
     except Exception as ex:
         raise HTTPException(status_code=500, detail="Failed to fetch all services: " + str(ex))
-
