@@ -4,4 +4,4 @@ pymongo==3.11.0
 asyncio==3.4.3
 requests==2.24.0
 prometheus_client==0.7.1
-starlette-exporter-0.7.0
+starlette-exporter==0.7.0

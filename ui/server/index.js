@@ -7,6 +7,8 @@ const users = require("./users");
 const constants = require("./constants")
 const app = express();
 
+console.log(process.env);
+
 users.createDefaultAdminUser()
     .then(res => {
         console.log(res)
