@@ -20,7 +20,7 @@ export const doLogin = (username, token) => {
         emailId: username,
         acl: token
     };
-    return axios.post("http://localhost:8083/api/user/login", JSON.stringify(data), {
+    return axios.post("http://localhost:8080/users/login", JSON.stringify(data), {
         headers: header,
     }).then(response => {
         console.log(response)
@@ -43,7 +43,7 @@ export const isAuthValid = () => {
 }
 
 export const listAllServices = () => {
-    return axios.get("http://localhost:8083/api/odin/services/", {
+    return axios.get("http://localhost:8080/api/odin/services/", {
         headers: header,
     }).then(response => {
         if (response.status && response.status < 300) {
@@ -59,7 +59,7 @@ export const listAllServices = () => {
 }
 
 export const getServiceDetails = (serviceName) => {
-    return axios.get("http://localhost:8083/api/odin/service/" + serviceName + "/status", {
+    return axios.get("http://localhost:8080/api/odin/service/" + serviceName + "/status", {
         headers: header,
     }).then(response => {
         if (response.status && response.status < 300) {
@@ -78,7 +78,7 @@ export const getServiceDetails = (serviceName) => {
 
 
 export const updateService = (serviceName) => {
-    return axios.put("http://localhost:8083/api/odin/service/" + serviceName, {
+    return axios.put("http://localhost:8080/api/odin/service/" + serviceName, {
         headers: header,
     }).then(response => {
         if (response.status && response.status < 300) {

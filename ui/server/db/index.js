@@ -1,4 +1,5 @@
-const globals = require("./../constants");
+const {Etcd3} = require('etcd3');
+const client = new Etcd3({hosts: process.env.ETCD3_URL});
 
 const {Etcd3} = require('etcd3');
 const client = new Etcd3({hosts: globals.DB_URL});

@@ -33,7 +33,8 @@
   },
   "scripts": {
     "start": "PORT=3001 react-scripts start",
-    "build": "react-scripts build",
+    "build": "npm ci && react-scripts build",
+    "prod": "node server/index.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "dev": "concurrently \"react-scripts start\" \"node server/index.js\""

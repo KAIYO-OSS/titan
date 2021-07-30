@@ -14,7 +14,7 @@ export default function ServiceDetail() {
         var dateParsed = new Date(Date.parse(date.toString()))
         return dateParsed.getDay() + "/" + dateParsed.getMonth() + "/" + dateParsed.getFullYear() + "-" + dateParsed.getHours() + ":" + dateParsed.getUTCMinutes();
     }
-    const [data, setData] = useState({info: {first_deployed: "-", last_deployed: "-"}, manifest: ""})
+    const [data, setData] = useState({info: {first_deployed: "0", last_deployed: "0"}, manifest: ""})
     const [revisions, setRevisions] = useState([])
     const [value, setValue] = useState("")
     const [spinner, setSpinner] = useState(true)
