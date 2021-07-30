@@ -1,10 +1,9 @@
 const express = require('express');
 const app = express.Router();
 const odinApi = require("./odin");
+const userApi = require("./users")
 const acl = require("./../acl");
 const logger = require('./../logger');
-const jwt = require('jsonwebtoken');
-const { response } = require('express');
 
 app
     .use(express.json())
@@ -12,7 +11,6 @@ app
     //     res.header("Access-Control-Allow-Origin", "*");
     //     res.header("Access-Control-Allow-Headers", "Origin, Content-Type, Accept");
     //     res.header("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS");
-
     //     let logObj = {
     //         'path': 'api/index'
     //     }
@@ -27,9 +25,7 @@ app
     //         });
     //         return;
     //     }
-
     //     let claims = acl.decodeTokenForUserInfo(accessToken);
-
     //     if(!claims) {
     //         logObj.note = 'Claims for the access token is NULL';
     //         logger.error(logObj);
@@ -59,9 +55,7 @@ app
     //         });
     //         return;
     //     }
-
     //     let authResp = await acl.authenticateTheUser(claims);
-
     //     if(authResp['status'] === 500) {
     //         logObj.note = 'Error encountered for access token = '.concat(accessToken);
     //         logger.error(logObj);

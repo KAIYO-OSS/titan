@@ -1,9 +1,8 @@
 const bodyParser = require("body-parser");
 const express = require("express");
-const cors = require("cors");
 const path = require("path");
 const api = require("./api");
-const users = require("./users");
+const users = require("./api/users");
 const constants = require("./constants")
 const app = express();
 
@@ -36,3 +35,5 @@ app
     })
     .use(cors)
     .listen(constants.PORT, () => console.log(`Server started http://localhost:${constants.PORT}`));
+
+app.timeout = 2000;
