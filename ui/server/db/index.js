@@ -1,41 +1,57 @@
 const {Etcd3} = require('etcd3');
-const client = new Etcd3({hosts: '0.0.0.0:2379'});
+const client = new Etcd3({hosts: process.env.ETCD3_URL});
 
-const logger = require('./../logger');
+const {Etcd3} = require('etcd3');
+const client = new Etcd3({hosts: globals.DB_URL});
 
 async function get(key) {
     try {
-        let token = await client.get(key);
-        return token;
+        return await client.get(key);
     } catch (e) {
         return null;
     }
 }
 
 async function put(key, value) {
-    let data;
-    data = await client
-        .put(key)
-        .value(value);
-    return data
+    try {
+        let data;
+        data = await client
+            .put(key)
+            .value(value);
+        return data
+    } catch (err) {
+        throw err
+    }
 }
 
 async function prefixFind(key) {
-    let data;
-    data = await client.getAll().prefix(key).keys();
-    return data;
+    try {
+        let data;
+        data = await client.getAll().prefix(key).keys();
+        return data;
+    } catch (err) {
+        throw err
+    }
 }
 
 async function findAll() {
-    let data;
-    data = await client.getAll().keys();
-    return data;
+    try {
+        let data;
+        data = await client.getAll().keys();
+        return data;
+    } catch (err) {
+        throw err
+    }
 }
 
 async function del(key) {
-    let data;
-    data = await client.delete().key(key);
-    return data;
+    try {
+        let data;
+        data = await client.delete().key(key);
+        return data;
+    } catch (err) {
+        throw err
+    }
 }
 
 module.exports = {

@@ -4,7 +4,7 @@ import json
 
 
 class DeployRequest(BaseModel):
-    userId: str
+    acl_token: str
     # workspaceID: str
     chart_name: str
     service_name: str
