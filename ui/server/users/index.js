@@ -90,7 +90,9 @@ app
             In the headers, pass the 'secret' to make an
             authenticated request.
          */
-        let secret = globals.APP_COMMON_SECRET; // This password should be passed int he headers
+
+        let secret = globals.APP_COMMON_SECRET;
+
         if (!req.headers['secret'] || (req.headers['secret'] != secret)) {
             logger.info('Wrong secret key has been passed');
             res.status(403);
@@ -127,11 +129,13 @@ app
         let acl = req.body['acl'];
         let aclSearchKey = 'user:email_address-'.concat(email);
         let aclTokenInDB;
+
         let logObj = {
             'path': '/login',
             'method': 'POST',
             'input': req.body
         }
+
         if (!req.body || !email || !acl) {
             //logObj.note = 'Null payload/keys passed';
             //logObj.info(logObj);
@@ -140,10 +144,13 @@ app
                 'msg': 'Access denied'
             })
         }
+
         logObj.note = 'Beginning login process';
         logger.info(logObj);
+
         try {
             aclTokenInDB = await etcdClient.get(aclSearchKey);
+
             if (!aclTokenInDB) {
                 logObj.note = 'ACL token not found in DB';
                 logger.info(logObj);
@@ -152,6 +159,7 @@ app
                     'msg': 'Access denied'
                 })
             }
+
             if (acl != aclTokenInDB) {
                 logObj.note = 'ACL token in DB didn\'t match with the ACL passed';
                 logger.info(logObj);
@@ -175,6 +183,7 @@ app
 
         try {
             userInfoForClaims = await etcdClient.get(userInfoSearchKey);
+
             if (!userInfoForClaims) {
                 logObj.note = 'User data not found for userInfoSearchKey = '
                     .concat(userInfoSearchKey);
@@ -190,8 +199,10 @@ app
             res.status(500);
             res.send({'msg': 'Internal Server Error'});
         }
+
         console.log(userInfoForClaims)
         userInfoForClaims = JSON.parse(userInfoForClaims);
+
         logObj.note = 'Claims for the user = '.concat(JSON.stringify(userInfoForClaims));
         logger.info(logObj);
 
@@ -211,30 +222,30 @@ app
 
         res.setHeader('x-access-token', sessToken);
         res.status(200);
+
         res.send({
             'msg': 'Successfully logged in !'
         });
 
     })
     .use('/create', async function (req, res, next) {
-        res.header("Access-Control-Allow-Origin", "*");
-        res.header("Access-Control-Allow-Headers", "Origin, Content-Type, Accept");
-        res.header("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS");
 
         let accessToken = req.headers['x-access-token'];
         let userValidate = acl.decodeTokenForUserInfo(accessToken);
         let rights = userValidate['data']['role'];
         let active = userValidate['data']['isActive'];
         let isRequestMakerAdmin = acl.isUserAdmin(rights);
+
         let logObj = {
             'path': '/create',
             'input': req.body
         }
 
         if (!isRequestMakerAdmin) {
-            logObj.note = 'Admin rights unfulfilled';
+            logObj.note = 'Can\'t create because of Non-Admin privilege';
             logger.info(logObj);
             res.status(403);
+
             res.send({
                 'msg': 'Could not verify user\'s access token'
             })
@@ -242,6 +253,7 @@ app
             logObj.note = 'Admin right unfulfilled';
             logger.info(logObj);
             res.status(403);
+
             res.send({
                 'msg': 'The user doesn\'t have access to users new user'
             })
@@ -314,13 +326,6 @@ app
         });
     })
     .use('/deactivate', async function (req, res, next) {
-        res.header("Access-Control-Allow-Origin", "*");
-        res.header("Access-Control-Allow-Headers", "Origin, Content-Type, Accept");
-        res.header("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS");
-
-        /* -> If the acl-token in the req-headers has an admin flag signature.
-           -> Also, check if the user making the request is active or not.
-        */
 
         let logObj = {
             'path': '/deactivate',
