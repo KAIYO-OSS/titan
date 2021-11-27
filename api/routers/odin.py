@@ -25,7 +25,8 @@ async def deploy_service(deploy_request: DeployRequest):
             "error": ""
         }
     except Exception as ex:
-        raise HTTPException(status_code=500, detail="Service deployment failed: " + str(ex))
+        raise HTTPException(
+            status_code=500, detail="Service deployment failed: " + str(ex))
 
 
 @router.delete("/odin/service/{service_name}", tags=["odin"])
@@ -40,7 +41,8 @@ async def delete_service(service_name):
             "error": ""
         }
     except Exception as ex:
-        raise HTTPException(status_code=500, detail="Service delete failed: " + str(ex))
+        raise HTTPException(
+            status_code=500, detail="Service delete failed: " + str(ex))
 
 
 @router.get("/odin/service/{service_name}/status", tags=["odin"])
@@ -57,7 +59,8 @@ async def get_status(service_name):
             "error": ""
         }
     except Exception as ex:
-        raise HTTPException(status_code=500, detail="Failed to fetch Service Status: " + str(ex))
+        raise HTTPException(
+            status_code=500, detail="Failed to fetch Service Status: " + str(ex))
 
 
 @router.get("/odin/service/{service_name}/revisions", tags=["odin"])
@@ -70,7 +73,8 @@ async def get_revisions(service_name):
             "error": ""
         }
     except Exception as ex:
-        raise HTTPException(status_code=500, detail="Failed to fetch Service Revisions: " + str(ex))
+        raise HTTPException(
+            status_code=500, detail="Failed to fetch Service Revisions: " + str(ex))
 
 
 @router.post("/odin/service/rollback", tags=["odin"])
@@ -85,17 +89,20 @@ async def rollback_service(rollback_request: RollbackRequest):
             "error": ""
         }
     except Exception as ex:
-        raise HTTPException(status_code=500, detail="Service deployment failed: " + str(ex))
+        raise HTTPException(
+            status_code=500, detail="Service deployment failed: " + str(ex))
 
 
 @router.get("/odin/services/", tags=["odin"])
 async def get_all_services():
     try:
-        service_list = Utils.getJsonValue(etcd, 'service_list')
+        # service_list = Utils.getJsonValue(etcd, 'service_list')
+        service_list = Utils.getJson(Helm.listAllServices())
         return {
             "status": "200",
             "metadata": service_list,
             "error": ""
         }
     except Exception as ex:
-        raise HTTPException(status_code=500, detail="Failed to fetch all services: " + str(ex))
+        raise HTTPException(
+            status_code=500, detail="Failed to fetch all services: " + str(ex))

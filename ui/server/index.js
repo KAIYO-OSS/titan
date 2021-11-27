@@ -13,13 +13,13 @@ users.createDefaultAdminUser()
         console.log(res)
     })
     .catch(err => {
-        console.log("Error creating default user. Error caused : "+ err)
+        console.log("Error creating default user. Error caused : " + err)
         console.log("stopping Server . Db not available ")
         process.exit(1)
     })
 
 app
-    .use(function(req, res, next) {
+    .use(function (req, res, next) {
         res.header("Access-Control-Allow-Origin", "*");
         res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
         res.header("Access-Control-Expose-Headers", "x-access-token, Uid")
@@ -33,7 +33,6 @@ app
     .get("*", (req, res) => {
         res.sendFile(path.join(__dirname, "..", "build/index.html"));
     })
-    .use(cors)
     .listen(constants.PORT, () => console.log(`Server started http://localhost:${constants.PORT}`));
 
 app.timeout = 2000;

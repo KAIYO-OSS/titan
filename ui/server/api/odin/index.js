@@ -10,7 +10,7 @@ let endpoints = {
     DEPLOY_SERVICE_ENDPOINT: '/odin/service',
     UPDATE_SERVICE_ENDPOINT: '/odin/service',
     GET_SERVICE_ENDPOINT: '/odin/service/',
-    GET_ALL_SERVICES_ENDPOINT: '/odin/services',
+    GET_ALL_SERVICES_ENDPOINT: '/odin/services/',
     DELETE_SERVICE_ENDPOINT: '/odin/service/',
     ROLLBACK_SERVICE_ENDPOINT: '/odin/service/rollback',
     WORKSPACE_INFORMATION_ENDPOINT: '/details/workspace/info/',

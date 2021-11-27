@@ -24,4 +24,5 @@ RUN chmod +x kubectl
 
 
 
-CMD ["uvicorn" ,"application:application", "--host", "0.0.0.0", "--port" ,"5000"]
+# CMD ["uvicorn" ,"application:application", "--host", "0.0.0.0", "--port" ,"5000"]
+CMD [ "python", "application.py" ]
