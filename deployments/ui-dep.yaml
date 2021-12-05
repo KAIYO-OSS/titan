@@ -1,4 +1,3 @@
-
 apiVersion: v1
 kind: Pod
 metadata:
@@ -7,21 +6,20 @@ metadata:
   name: titan-ui
 spec:
   containers:
-    - image: anuragsarkar250/public:1
+    - image: anuragsarkar250/titan-frontend:latest
       name: titan-ui
-      env: 
-      - name: "ETCD3_URL"
-        value: "http://etcd-client:2379"
-      - name: "ODIN_SERVICE_URL"
-        value: "http://titan-odin:5000"
+      env:
+        - name: "ETCD3_URL"
+          value: "http://etcd-client:2379"
+        - name: "ODIN_SERVICE_URL"
+          value: "http://titan-odin:5000"
       ports:
-      - containerPort: 8080
-        name: titan-ui
-        protocol: TCP
+        - containerPort: 8080
+          name: titan-ui
+          protocol: TCP
   restartPolicy: Always
 
 ---
-
 apiVersion: v1
 kind: Service
 metadata:
@@ -31,9 +29,9 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-  - name: titan-ui
-    port: 8080
-    protocol: TCP
-    targetPort: 8080
+    - name: titan-ui
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
   selector:
     app: titan-ui

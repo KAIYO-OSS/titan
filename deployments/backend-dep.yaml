@@ -6,7 +6,7 @@ metadata:
   name: titan-odin
 spec:
   containers:
-    - image: anuragsarkar250/backend:1
+    - image: anuragsarkar250/titan-backend:latest
       name: titan-odin
       env:
         - name: "ETCD3_URL"
