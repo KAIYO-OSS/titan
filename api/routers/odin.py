@@ -5,6 +5,7 @@ from util.helm import Helm
 from models.deployRequest import DeployRequest
 from models.rollbackRequest import RollbackRequest
 from util.utilityHelpers import Utils
+from util.kubernetes import Kubernentes
 import etcd3
 
 router = APIRouter()
@@ -106,3 +107,20 @@ async def get_all_services():
     except Exception as ex:
         raise HTTPException(
             status_code=500, detail="Failed to fetch all services: " + str(ex))
+
+@router.get("/odin/metrics/{pod_name}", tags=["odin"])
+async def get_pod_metrics(pod_name):
+    try:
+        metrics_params = Kubernentes.getPodMetrics(podName=pod_name).split()
+        return {
+            "status": "200",
+            "metadata": {
+                "name": metrics_params[3],
+                "cpu": metrics_params[4],
+                "memory": metrics_params[5]
+            }
+        }
+    except Exception as ex:
+        raise HTTPException(
+            status_code=500, details="Error getting metrics: " + str(ex)
+        )

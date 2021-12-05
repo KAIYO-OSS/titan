@@ -36,3 +36,8 @@ class Kubernentes():
     def getService(serviceName):
         getService = "kubectl get services {serviceName} -o json".format(serviceName=serviceName)
         return Utils.executeCommand(getService)
+
+    @staticmethod
+    def getPodMetrics(podName):
+        metricsCommand = "kubectl top pod {podName}".format(podName=podName)
+        return Utils.executeCommand(metricsCommand)
