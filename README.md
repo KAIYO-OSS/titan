@@ -20,12 +20,11 @@ run respective docker instances. and a ```etcd``` client.
 
 ## TODO
 
-- [x] deployment for helm charts 
-- [x] rollbacks 
-- [x] service details  
-- [ ] access control list and SSO 
-- [ ] deployment approval and rejection 
-- [ ] cluster switching 
+- [x] Deployment for helm charts 
+- [x] Rollbacks 
+- [x] Service/Deployment details  
+- [ ] Cluster switching 
+- [ ] Cloud Support (AWS/GCP/Azure)
 
 ## Contribution 
 
